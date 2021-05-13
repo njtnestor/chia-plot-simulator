@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="default-layout">
     <Nuxt />
   </div>
 </template>
@@ -58,5 +58,9 @@ html {
 .button--grey:hover {
   color: #fff;
   background-color: #35495e;
+}
+
+.default-layout{
+  min-height: 100vh;
 }
 </style>
