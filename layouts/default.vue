@@ -1,10 +1,27 @@
 <template>
   <div class="default-layout">
-    <Nuxt />
+    <Navbar />
+    <div class="contain">
+      <Nuxt />
+    </div>
+    <Footer />
   </div>
 </template>
 
-<style>
+<script>
+import Navbar from './partials/Navbar'
+import Footer from './partials/Footer'
+
+export default {
+  name: 'DefaultLayout',
+  components: {
+    Navbar,
+    Footer
+  }
+}
+</script>
+
+<style lang="scss" scoped>
 html {
   font-family:
     'Source Sans Pro',
@@ -61,6 +78,10 @@ html {
 }
 
 .default-layout{
-  min-height: 100vh;
+  min-height:80vh;
+}
+
+.contain{
+  min-height: inherit;
 }
 </style>

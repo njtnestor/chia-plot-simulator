@@ -1,5 +1,5 @@
 <template>
-  <div ref="gantt" class="gantt" />
+  <div ref="gantt" class="gantElement" />
 </template>
 
 <script>
@@ -14,17 +14,24 @@ export default {
       }
     }
   },
+  data () {
+    return {
+      hi: false,
+      file: undefined
+    }
+  },
 
   mounted () {
     this.$gantt().config.round_dnd_dates = false
     this.$gantt().config.time_step = 1
     this.$gantt().config.columns[1].width = 150
     this.$gantt().config.duration_unit = 'minute'
-    this.$gantt().config.date_grid = '%Y-%m-%d %H:%i'
+    this.$gantt().config.date_grid = '%Y-%m-%d %Hh:%i'
 
     this.$gantt().config.scales = [
-      { unit: 'hour', step: 1, format: '%H' },
-      { unit: 'minute', step: 30, format: '%i' }
+      { unit: 'hour', step: 1, format: '%Hh' },
+      { unit: 'day', step: 1, format: '%j, %D' }
+
     ]
     this.$gantt().init(this.$refs.gantt)
     this.$gantt().parse(this.$props.tasks)
@@ -38,7 +45,7 @@ export default {
 <style>
  @import "dhtmlx-gantt/codebase/dhtmlxgantt.css";
 
- .gantt{
+ .gantt, .gantElement{
    min-height: inherit;
  }
 </style>
