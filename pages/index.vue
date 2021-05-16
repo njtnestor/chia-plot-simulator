@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
+
 export default {
   data () {
     return {
@@ -111,6 +113,13 @@ export default {
         parent: taskId,
         open: false
       })
+      /* Get earliest date and latest date */
+      const earliestOrderedList = this.plots.sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
+      const minDate = earliestOrderedList[0].phaseOne.startDate
+      this.$gantt().config.start_date = dayjs(minDate).startOf('hour').toDate()
+      const latestOrderedList = this.plots.sort((a, b) => new Date(b.copyPhase.endDate) - new Date(a.copyPhase.endDate))
+      const maxDate = latestOrderedList[0].copyPhase.endDate
+      this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
     },
     send () {
       // this.$gantt().parse(this.tasks)

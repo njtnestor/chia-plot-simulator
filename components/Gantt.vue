@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
 
 export default {
   name: 'Gantt',
@@ -22,6 +23,8 @@ export default {
   },
 
   mounted () {
+    this.$gantt().config.start_date = dayjs().startOf('day').toDate()
+    this.$gantt().config.end_date = dayjs().add(1, 'day').startOf('day').toDate()
     this.$gantt().config.fit_tasks = true
     this.$gantt().config.round_dnd_dates = false
     this.$gantt().config.time_step = 1
