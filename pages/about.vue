@@ -4,7 +4,10 @@
       What is Chia Plot Simulator?
     </h1>
     <p>
-      Chia Plot Simulator is a utility to mine the chia cryptocurrency. Helping you to quickly visualize and analyze the way you have been plotting your plots. So you can check if everything is working as you had planned without having to be aware.
+      Chia Plot Simulator is a utility to mine the chia cryptocurrency (XCH). Helping you to quickly visualize and analyze the way you have been plotting your plots. So you can check if everything is working as you had planned without having to be aware.
+    </p>
+    <p>
+      Visualize the way your plots are being created and easily identify any bottlenecks.
     </p>
     <h3 class="mt-4">
       Great, how does it work?
