@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
 
 export default {
   name: 'Gantt',
@@ -22,10 +23,13 @@ export default {
   },
 
   mounted () {
+    this.$gantt().config.start_date = dayjs().startOf('day').toDate()
+    this.$gantt().config.end_date = dayjs().add(1, 'day').startOf('day').toDate()
     this.$gantt().config.fit_tasks = true
     this.$gantt().config.round_dnd_dates = false
     this.$gantt().config.time_step = 1
     this.$gantt().config.min_column_width = 100
+    this.$gantt().config.scale_height = 50
     this.$gantt().config.grid_width = 500
     this.$gantt().config.duration_unit = 'minute'
     this.$gantt().config.date_grid = '%Y-%m-%d %H:%i'
@@ -50,8 +54,8 @@ export default {
       },
       { name: 'threads', label: 'Threads', align: 'center', width: 50 },
       { name: 'ram', label: 'Ram', align: 'center' },
-      { name: 'size', label: 'Size', align: 'center', width: 50 },
-      { name: 'add', label: '', width: 44 }
+      { name: 'size', label: 'Size', align: 'center', width: 50 }
+      // { name: 'add', label: '', width: 44 }
     ]
 
     this.$gantt().plugins({
@@ -67,6 +71,41 @@ export default {
               <br/><b>Start date:</b> ${start.toLocaleString()}
               <br/><b>End date:</b> ${end.toLocaleString()}`
     }
+    const zoomConfig = {
+      levels: [
+        {
+          name: 'day',
+          min_column_width: 80,
+          scales: [
+            { unit: 'day', step: 1, format: '%d %M, %D' }
+          ]
+        },
+        {
+          name: 'hour',
+          min_column_width: 30,
+          scales: [
+            { unit: 'hour', step: 1, format: '%Hh' },
+            { unit: 'day', step: 1, format: '%d %M, %D' }
+          ]
+        },
+        {
+          name: 'minute',
+          min_column_width: 30,
+          scales: [
+            { unit: 'minute', step: 15, format: '%i' },
+            { unit: 'hour', step: 1, format: '%Hh' }
+          ]
+        }
+      ],
+      useKey: 'ctrlKey',
+      trigger: 'wheel',
+      element: () => {
+        return this.$gantt().$root.querySelector('.gantt_task')
+      }
+    }
+
+    this.$gantt().ext.zoom.init(zoomConfig)
+    this.$gantt().ext.zoom.setLevel('hour')
     this.$gantt().init(this.$refs.gantt)
     this.$gantt().parse(this.$props.tasks)
     /* gantt.init(this.$refs.gantt)
