@@ -117,14 +117,26 @@ export default {
   },
   methods: {
     change () {
-      //https://docs.dhtmlx.com/gantt/api__gantt_refreshdata.html
+      // https://docs.dhtmlx.com/gantt/api__gantt_refreshdata.html
       console.log('hi')
       this.$gantt().refreshData()
       this.$gantt().refreshTask(2)
       this.$gantt().render()
     },
     send () {
-      this.$gantt().parse(this.tasks)
+      // this.$gantt().parse(this.tasks)
+      const reader = new FileReader()
+
+      reader.onload = function (evt) {
+        // console.log(reader.result)
+        const phase1lane = reader.result.split('Time for phase 1 = ')[1].split('\n')[0].split(' ')
+        console.log('f1 duration: ', phase1lane[0])
+        console.log('f1 end-date: ', phase1lane[4], phase1lane[5], phase1lane[6], phase1lane[7], phase1lane[8])
+        const phase2lane = reader.result.split('Time for phase 2 = ')[1].split('\n')[0].split(' ')
+        console.log('f2 duration: ', phase2lane[0])
+        console.log('f2 end-date: ', phase2lane[4], phase2lane[5], phase2lane[6], phase2lane[7], phase2lane[8])
+      }
+      reader.readAsText(this.file)
     }
   }
 }
