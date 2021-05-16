@@ -129,12 +129,36 @@ export default {
 
       reader.onload = function (evt) {
         // console.log(reader.result)
-        const phase1lane = reader.result.split('Time for phase 1 = ')[1].split('\n')[0].split(' ')
-        console.log('f1 duration: ', phase1lane[0])
-        console.log('f1 end-date: ', phase1lane[4], phase1lane[5], phase1lane[6], phase1lane[7], phase1lane[8])
-        const phase2lane = reader.result.split('Time for phase 2 = ')[1].split('\n')[0].split(' ')
-        console.log('f2 duration: ', phase2lane[0])
-        console.log('f2 end-date: ', phase2lane[4], phase2lane[5], phase2lane[6], phase2lane[7], phase2lane[8])
+        const phase1Startinfo = reader.result.split('Starting phase 1/4: Forward Propagation into tmp files... ')[1].split('\n')[0].split(' ')
+        console.log('-f1 start-date: ', phase1Startinfo[0], phase1Startinfo[1], phase1Startinfo[2], phase1Startinfo[3], phase1Startinfo[4])
+        const phase1Endinfo = reader.result.split('Time for phase 1 = ')[1].split('\n')[0].split(' ')
+        console.log('f1 end-duration: ', phase1Endinfo[0])
+        console.log('f1 end-date: ', phase1Endinfo[4], phase1Endinfo[5], phase1Endinfo[6], phase1Endinfo[7], phase1Endinfo[8])
+
+        const phase2Startinfo = reader.result.split('Starting phase 2/4: Backpropagation into tmp files... ')[1].split('\n')[0].split(' ')
+        console.log('-f2 start-date: ', phase2Startinfo[0], phase2Startinfo[1], phase2Startinfo[2], phase2Startinfo[3], phase2Startinfo[4])
+        const phase2Endinfo = reader.result.split('Time for phase 2 = ')[1].split('\n')[0].split(' ')
+        console.log('f2 end-duration: ', phase2Endinfo[0])
+        console.log('f2 end-date: ', phase2Endinfo[4], phase2Endinfo[5], phase2Endinfo[6], phase2Endinfo[7], phase2Endinfo[8])
+
+        const phase3Startinfo = reader.result.split('Starting phase 3/4: ')[1].split('\n')[0].split('... ')[1].split(' ')
+        console.log('-f3 start-date: ', phase3Startinfo[0], phase3Startinfo[1], phase3Startinfo[2], phase3Startinfo[3], phase3Startinfo[4])
+        const phase3Endinfo = reader.result.split('Time for phase 3 = ')[1].split('\n')[0].split(' ')
+        console.log('f3 end-duration: ', phase3Endinfo[0])
+        console.log('f3 end-date: ', phase3Endinfo[4], phase3Endinfo[5], phase3Endinfo[6], phase3Endinfo[7], phase3Endinfo[8])
+
+        const phase4Startinfo = reader.result.split('Starting phase 4/4: ')[1].split('\n')[0].split('... ')[1].split(' ')
+        console.log('-f4 start-date: ', phase4Startinfo[0], phase4Startinfo[1], phase4Startinfo[2], phase4Startinfo[3], phase4Startinfo[4])
+        const phase4Endinfo = reader.result.split('Time for phase 4 = ')[1].split('\n')[0].split(' ')
+        console.log('f4 end-duration: ', phase4Endinfo[0])
+        console.log('f4 end-date: ', phase4Endinfo[4], phase4Endinfo[5], phase4Endinfo[6], phase4Endinfo[7], phase4Endinfo[8])
+
+        const totalTime = reader.result.split('Total time = ')[1].split('\n')[0].split(' ')[0]
+        console.log('-Total time: ', totalTime)
+
+        const phaseCopyInfo = reader.result.split('Copy time = ')[1].split('\n')[0].split(' ')
+        console.log('-fCopy duration: ', phaseCopyInfo[0])
+        console.log('fCopy end-date: ', phaseCopyInfo[4], phaseCopyInfo[5], phaseCopyInfo[6], phaseCopyInfo[7], phaseCopyInfo[8])
       }
       reader.readAsText(this.file)
     }
