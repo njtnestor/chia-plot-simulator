@@ -1,33 +1,25 @@
 <template>
   <div style="min-height: inherit">
-    <b-container class="py-3">
-      <b-button @click="newPlot=!newPlot">
+    <div class="newPlotContainer py-3">
+      <b-button v-if="!newPlot" variant="primary" @click="newPlot=!newPlot">
         New plot
       </b-button>
-      <b-button v-if="newPlot" @click="newPlot=false">
-        X
-      </b-button>
+
       <div v-if="newPlot">
-        <b-form-input
-          v-model="plotName"
-          class="my-2"
-          placeholder="Plot name"
-        />
         <b-form-file
           v-model="file"
           placeholder="Choose a plot log file or drop it here..."
           drop-placeholder="Drop plot log file here..."
         />
 
-        <div class="mt-3">
-          Selected file: {{ file ? file.name : '' }}
-        </div>
-
-        <b-button @click="send">
-          click
+        <b-button class="mt-2" variant="primary" @click="send">
+          Create
+        </b-button>
+        <b-button v-if="newPlot" class="mt-2" @click="newPlot=false">
+          Cancel
         </b-button>
       </div>
-    </b-container>
+    </div>
     <Gantt class="left-container" :tasks="tasks" />
   </div>
 </template>
@@ -36,7 +28,6 @@
 export default {
   data () {
     return {
-      plotName: undefined,
       file: undefined,
       newPlot: false,
       plots: [],
@@ -163,7 +154,10 @@ export default {
 </script>
 
 <style>
-
+  .newPlotContainer{
+    text-align: left;
+    padding: 0 16px;
+  }
   .left-container {
     overflow: hidden;
     position: relative;
