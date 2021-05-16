@@ -16,7 +16,8 @@
     "core-js": "^3.9.1",
     "dayjs": "^1.10.4",
     "dhtmlx-gantt": "^7.1.2",
-    "nuxt": "^2.15.3"
+    "nuxt": "^2.15.3",
+    "nuxt-cookie-control": "^1.9.7"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^6.0.0",

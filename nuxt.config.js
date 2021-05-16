@@ -48,10 +48,86 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/bootstrap
-    'bootstrap-vue/nuxt'
+    'bootstrap-vue/nuxt',
+    ['nuxt-cookie-control', {
+      colors: {
+        barTextColor: '#fff',
+        modalOverlay: '#000',
+        barBackground: '#35a75a',
+        barButtonColor: '#35a75a',
+        modalTextColor: '#35a75a',
+        modalBackground: '#fff',
+        modalOverlayOpacity: 0.8,
+        modalButtonColor: '#fff',
+        modalUnsavedColor: '#fff',
+        barButtonHoverColor: '#fff',
+        barButtonBackground: '#fff',
+        modalButtonHoverColor: '#fff',
+        modalButtonBackground: '#35a75a',
+        controlButtonIconColor: '#35a75a',
+        controlButtonBackground: '#fff',
+        barButtonHoverBackground: '#333',
+        checkboxActiveBackground: '#35a75a',
+        checkboxInactiveBackground: '#35a75a',
+        modalButtonHoverBackground: '#333',
+        checkboxDisabledBackground: '#ddd',
+        controlButtonIconHoverColor: '#fff',
+        controlButtonHoverBackground: '#35a75a',
+        checkboxActiveCircleBackground: '#fff',
+        checkboxInactiveCircleBackground: '#fff',
+        checkboxDisabledCircleBackground: '#fff'
+      }
+    }]
+
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+  },
+  cookies: {
+    necessary: [
+      {
+        // if multilanguage
+        /* name: {
+          en: 'Default Cookies'
+        }, */
+        // else
+        name: 'Default Cookies',
+        // if multilanguage
+        /* description: {
+          en: 'Used for cookie control.'
+        }, */
+        // else
+        description: 'Used for cookie control.',
+        cookies: ['cookie_control_consent', 'cookie_control_enabled_cookies']
+      }
+    ],
+    optional: [
+      {
+        name: 'Google Analitycs',
+        // if you don't set identifier, slugified name will be used
+        identifier: 'ga',
+        // if multilanguage
+        /* description: {
+          en: 'Google GTM is ...'
+        }, */
+        // else
+        description: 'Google Analytics is a web analytics service offered by Google that tracks and reports website traffic.',
+
+        initialState: true,
+        src: `https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_ANALYTICS_ID}`,
+        async: true,
+        cookies: ['_ga', '_gat', '_gid'],
+        accepted: () => {
+          window.dataLayer = window.dataLayer || []
+          window.dataLayer.push({
+            'gtm.start': new Date().getTime(),
+            event: 'gtm.js'
+          })
+        },
+        declined: () => {
+        }
+      }
+    ]
   }
 }
