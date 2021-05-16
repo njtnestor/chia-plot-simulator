@@ -29,6 +29,7 @@ export default {
     this.$gantt().config.round_dnd_dates = false
     this.$gantt().config.time_step = 1
     this.$gantt().config.min_column_width = 100
+    this.$gantt().config.scale_height = 50
     this.$gantt().config.grid_width = 500
     this.$gantt().config.duration_unit = 'minute'
     this.$gantt().config.date_grid = '%Y-%m-%d %H:%i'
@@ -74,27 +75,24 @@ export default {
       levels: [
         {
           name: 'day',
-          scale_height: 27,
           min_column_width: 80,
           scales: [
-            { unit: 'day', step: 1, format: '%d %M' }
+            { unit: 'day', step: 1, format: '%d %M, %D' }
           ]
         },
         {
           name: 'hour',
-          scale_height: 27,
-          min_column_width: 15,
+          min_column_width: 30,
           scales: [
             { unit: 'hour', step: 1, format: '%Hh' },
-            { unit: 'day', step: 1, format: '%Y-%m-%d, %D' }
+            { unit: 'day', step: 1, format: '%d %M, %D' }
           ]
         },
         {
           name: 'minute',
-          scale_height: 40,
           min_column_width: 30,
           scales: [
-            { unit: 'minute', step: 4, format: '%i' },
+            { unit: 'minute', step: 15, format: '%i' },
             { unit: 'hour', step: 1, format: '%Hh' }
           ]
         }

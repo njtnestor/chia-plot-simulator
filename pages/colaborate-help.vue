@@ -35,7 +35,7 @@
     </p>
     <ul>
       <li>
-        <a rel="nofollow noopener" target="_blank" href="https://www.buymeacoffee.com/njtnestor">Dana</a>
+        <a rel="nofollow noopener" target="_blank" href="https://www.twitch.tv/helloyouagain">Dana</a>
       </li>
     </ul>
 
