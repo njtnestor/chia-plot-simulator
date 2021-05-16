@@ -33,6 +33,21 @@ export default {
       { unit: 'day', step: 1, format: '%j, %D' }
 
     ]
+    this.$gantt().config.columns = [
+      { name: 'text', label: 'Task name', width: '*', tree: true },
+      { name: 'start_date', label: 'Start time', align: 'center' },
+      {
+        name: 'duration',
+        label: 'Duration',
+        align: 'center',
+        template (obj) {
+          return (obj.totalTime) ? new Date(Number(obj.totalTime) * 1000).toISOString().substr(11, 8) : ''
+        }
+      },
+      { name: 'threads', label: 'Threads', align: 'center' },
+      { name: 'ram', label: 'Ram', align: 'center' },
+      { name: 'size', label: 'Size', align: 'center' }
+    ]
     this.$gantt().init(this.$refs.gantt)
     this.$gantt().parse(this.$props.tasks)
     /* gantt.init(this.$refs.gantt)

@@ -47,12 +47,16 @@ export default {
             text: 'Q1 - P1',
             start_date: '01-04-2021 14:10',
             end_date: '01-04-2021 21:54',
+            totalTime: 26052.671,
             progress: 1,
+            holder: 'hi',
+            size: `k${32}`,
+            threads: 6,
+            ram: 5495,
             open: false,
             render: 'split'
           },
           {
-            id: '2',
             text: 'F1',
             start_date: '01-04-2021 14:14',
             end_date: '01-04-2021 16:37',
@@ -62,7 +66,6 @@ export default {
             parent: 1
           },
           {
-            id: '3',
             text: 'F2',
             start_date: '01-04-2021 16:37',
             end_date: '01-04-2021 18:34',
@@ -72,7 +75,7 @@ export default {
             open: false
           },
           {
-            id: '4',
+
             text: 'F3',
             start_date: '01-04-2021 18:34',
             end_date: '01-04-2021 21:12',
@@ -82,7 +85,6 @@ export default {
             open: false
           },
           {
-            id: '5',
             text: 'F4',
             start_date: '01-04-2021 21:12',
             end_date: '01-04-2021 21:23',
@@ -92,7 +94,6 @@ export default {
             open: false
           },
           {
-            id: '6',
             text: 'Copy',
             start_date: '01-04-2021 21:23',
             end_date: '01-04-2021 21:54',
@@ -100,8 +101,8 @@ export default {
             color: 'grey',
             parent: 1,
             open: false
-          },
-          {
+          }
+          /* {
             id: '7',
             text: 'Q2 - P1',
             start_date: '01-04-2021 14:10',
@@ -109,7 +110,7 @@ export default {
             progress: 1,
             open: false,
             render: 'split'
-          }
+          } */
         ]
 
       }
