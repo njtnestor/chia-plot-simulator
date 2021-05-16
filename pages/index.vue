@@ -12,7 +12,7 @@
           drop-placeholder="Drop plot log file here..."
         />
 
-        <b-button class="mt-2" variant="primary" @click="send">
+        <b-button class="mt-2" variant="primary" :disabled="!file" @click="send">
           Create
         </b-button>
         <b-button v-if="newPlot" class="mt-2" @click="newPlot=false">

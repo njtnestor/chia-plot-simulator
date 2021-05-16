@@ -50,8 +50,8 @@ export default {
       },
       { name: 'threads', label: 'Threads', align: 'center', width: 50 },
       { name: 'ram', label: 'Ram', align: 'center' },
-      { name: 'size', label: 'Size', align: 'center', width: 50 },
-      { name: 'add', label: '', width: 44 }
+      { name: 'size', label: 'Size', align: 'center', width: 50 }
+      // { name: 'add', label: '', width: 44 }
     ]
 
     this.$gantt().plugins({
@@ -67,6 +67,44 @@ export default {
               <br/><b>Start date:</b> ${start.toLocaleString()}
               <br/><b>End date:</b> ${end.toLocaleString()}`
     }
+    const zoomConfig = {
+      levels: [
+        {
+          name: 'day',
+          scale_height: 27,
+          min_column_width: 80,
+          scales: [
+            { unit: 'day', step: 1, format: '%d %M' }
+          ]
+        },
+        {
+          name: 'hour',
+          scale_height: 27,
+          min_column_width: 15,
+          scales: [
+            { unit: 'hour', step: 1, format: '%Hh' },
+            { unit: 'day', step: 1, format: '%Y-%m-%d, %D' }
+          ]
+        },
+        {
+          name: 'minute',
+          scale_height: 40,
+          min_column_width: 30,
+          scales: [
+            { unit: 'minute', step: 4, format: '%i' },
+            { unit: 'hour', step: 1, format: '%Hh' }
+          ]
+        }
+      ],
+      useKey: 'ctrlKey',
+      trigger: 'wheel',
+      element: () => {
+        return this.$gantt().$root.querySelector('.gantt_task')
+      }
+    }
+
+    this.$gantt().ext.zoom.init(zoomConfig)
+    this.$gantt().ext.zoom.setLevel('hour')
     this.$gantt().init(this.$refs.gantt)
     this.$gantt().parse(this.$props.tasks)
     /* gantt.init(this.$refs.gantt)

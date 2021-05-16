@@ -3,7 +3,7 @@
     <b-navbar toggleable="lg">
       <b-navbar-brand>
         <nuxt-link class="nav-link" to="/">
-          <b>ChiaPlotterSimulator</b>
+          <b>ChiaPlotSimulator</b>
         </nuxt-link>
       </b-navbar-brand>
       <b-navbar-toggle target="nav-collapse" />
