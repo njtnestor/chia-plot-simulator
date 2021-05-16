@@ -67,7 +67,7 @@ export default {
         end_date: new Date(plot.phaseOne.endDate),
         progress: 1,
         open: false,
-        color: '#fe3d5e',
+        color: '#08534a',
         parent: taskId
       })
       this.$gantt().addTask({
@@ -76,7 +76,7 @@ export default {
         totalTime: plot.phaseTwo.duration,
         end_date: new Date(plot.phaseTwo.endDate),
         progress: 1,
-        color: '#99ff35',
+        color: '#ff9f01',
         parent: taskId,
         open: false
       })
@@ -87,7 +87,7 @@ export default {
         totalTime: plot.phaseThree.duration,
         end_date: new Date(plot.phaseThree.endDate),
         progress: 1,
-        color: 'lime',
+        color: '#3e612c',
         parent: taskId,
         open: false
       })
@@ -97,7 +97,7 @@ export default {
         totalTime: plot.phaseFour.duration,
         end_date: new Date(plot.phaseFour.endDate),
         progress: 1,
-        color: 'red',
+        color: '#3f3d56',
         parent: taskId,
         open: false
       })
@@ -107,7 +107,7 @@ export default {
         totalTime: plot.copyPhase.duration,
         end_date: new Date(plot.copyPhase.endDate),
         progress: 1,
-        color: 'grey',
+        color: '#3563b1',
         parent: taskId,
         open: false
       })

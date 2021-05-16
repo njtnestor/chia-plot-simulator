@@ -29,6 +29,8 @@ export default {
     this.$gantt().config.grid_width = 500
     this.$gantt().config.duration_unit = 'minute'
     this.$gantt().config.date_grid = '%Y-%m-%d %H:%i'
+    this.$gantt().config.drag_progress = false
+    this.$gantt().config.drag_links = false
 
     this.$gantt().config.scales = [
       { unit: 'hour', step: 1, format: '%Hh' },
@@ -56,8 +58,12 @@ export default {
       tooltip: true
     })
     this.$gantt().templates.tooltip_text = function (start, end, task) {
-      return `<b>Phase:</b> ${task.text}
-              <br/><b>Duration:</b> ${new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8)}
+      const isParent = !task.parent
+      const name = isParent ? task.id : task.text
+      const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
+
+      return `<b>${isParent ? 'Plot ID' : 'Phase'}:</b> ${name}
+              <br/><b>Duration:</b> ${duration}
               <br/><b>Start date:</b> ${start.toLocaleString()}
               <br/><b>End date:</b> ${end.toLocaleString()}`
     }
@@ -75,5 +81,9 @@ export default {
 
  .gantt, .gantElement{
    min-height: inherit;
+ }
+
+ .gantt_task_content{
+   font-weight: bold;
  }
 </style>
