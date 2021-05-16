@@ -1,5 +1,5 @@
 <template>
-  <b-container class="mb-6">
+  <b-container class="my-5">
     <h1 class="mt-5">
       Ways to colaborate?
     </h1>
