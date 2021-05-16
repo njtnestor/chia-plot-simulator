@@ -1,3 +1,8 @@
 a {
   color: #35a75a;
 }
+$primary: #35a75a !default;
+// Bootstrap and its default variables
+@import '../node_modules/bootstrap/scss/bootstrap';
+// BootstrapVue and its default variables
+@import '../node_modules/bootstrap-vue/src/index.scss';

@@ -1,7 +1,7 @@
 <template>
   <footer class="footerP">
     <b-container>
-      <p>&copy;chiaplottersimulator.com</p>
+      <p>&copy;chiaplotsimulator.com</p>
     </b-container>
   </footer>
 </template>
