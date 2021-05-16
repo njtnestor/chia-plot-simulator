@@ -45,7 +45,7 @@ html {
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
+  //margin: 0;
 }
 
 .button--green {
@@ -77,11 +77,12 @@ html {
   background-color: #35495e;
 }
 
-.default-layout{
+/*.default-layout{
   min-height:80vh;
-}
+}*/
 
 .contain{
-  min-height: inherit;
+  //100vh - navbar - create plot bar - footer
+  min-height: calc( 100vh - 74px - 70px - 102px);
 }
 </style>

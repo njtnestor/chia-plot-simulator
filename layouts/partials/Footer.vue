@@ -15,6 +15,7 @@ export default {
     color:white;
   }
   .footerP{
+      border-top: 2px solid #35a75a;
       padding-top:30px;
       padding-bottom:30px;
       text-align: center;

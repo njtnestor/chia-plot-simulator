@@ -2,11 +2,18 @@
   <div class="nav-wrapper">
     <b-navbar toggleable="lg">
       <b-navbar-brand>
-        <b>ChiaPlotterSimulator</b>
+        <nuxt-link class="nav-link" to="/">
+          <b>ChiaPlotterSimulator</b>
+        </nuxt-link>
       </b-navbar-brand>
       <b-navbar-toggle target="nav-collapse" />
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
+          <li class="nav-item">
+            <nuxt-link class="nav-link" to="/colaborate-help">
+              Colaborate/help
+            </nuxt-link>
+          </li>
           <li class="nav-item">
             <nuxt-link class="nav-link" to="·/">
               About
