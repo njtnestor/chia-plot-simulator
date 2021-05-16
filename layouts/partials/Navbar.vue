@@ -15,7 +15,7 @@
             </nuxt-link>
           </li>
           <li class="nav-item">
-            <nuxt-link class="nav-link" to="·/">
+            <nuxt-link class="nav-link" to="/about">
               About
             </nuxt-link>
           </li>

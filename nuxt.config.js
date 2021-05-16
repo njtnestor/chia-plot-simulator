@@ -34,9 +34,17 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/eslint
-    // '@nuxtjs/eslint-module'
+    // '@nuxtjs/eslint-module',
+    '@nuxtjs/google-analytics'
   ],
-
+  googleAnalytics: {
+    id: process.env.GOOGLE_ANALYTICS_ID // Use as fallback if no runtime config is provided
+  },
+  publicRuntimeConfig: {
+    googleAnalytics: {
+      id: process.env.GOOGLE_ANALYTICS_ID
+    }
+  },
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/bootstrap
