@@ -164,10 +164,6 @@ export default {
 
 <style>
 
-  .container {
-    height: 100%;
-    width: 100%;
-  }
   .left-container {
     overflow: hidden;
     position: relative;
