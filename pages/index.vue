@@ -36,6 +36,18 @@ export default {
       }
     }
   },
+  head () {
+    return {
+      title: 'Chia Plot Simulator - Analyze your plotting time',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'This plotting simulator will help you to plot faster, find errors visually, analyze if it went as you had planned and earn more chias (XCH).'
+        }
+      ]
+    }
+  },
   methods: {
     addPlotTasks (plot) {
       const taskId = this.$gantt().addTask({
