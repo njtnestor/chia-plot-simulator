@@ -102,17 +102,24 @@ export default {
             threads: log.split('Buffer size is: ')[1].split('\n')[2].split(' ')[1],
             id: log.split('ID: ')[1].split('\n')[0]
           }
-          console.log(plot)
           logsToProcess.push(plot)
         }
       })
 
-      logsToProcess.sort((a, b) => a.phaseOne.startDate - b.phaseOne.startDate)
+      logsToProcess
+        .sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
+        .forEach((plot) => {
+          this.plots.push(plot)
+          this.addPlotTasks(plot)
+        })
 
-      logsToProcess.forEach((plot) => {
-        this.plots.push(plot)
-        this.addPlotTasks(plot)
-      })
+      /* Get earliest date and latest date */
+      const earliestOrderedList = this.plots.sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
+      const minDate = earliestOrderedList[0].phaseOne.startDate
+      this.$gantt().config.start_date = dayjs(minDate).startOf('hour').toDate()
+      const latestOrderedList = this.plots.sort((a, b) => new Date(b.copyPhase.endDate) - new Date(a.copyPhase.endDate))
+      const maxDate = latestOrderedList[0].copyPhase.endDate
+      this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
     },
     addPlotTasks (plot) {
       const taskId = this.$gantt().addTask({
@@ -179,13 +186,6 @@ export default {
         parent: taskId,
         open: false
       })
-      /* Get earliest date and latest date */
-      const earliestOrderedList = this.plots.sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
-      const minDate = earliestOrderedList[0].phaseOne.startDate
-      this.$gantt().config.start_date = dayjs(minDate).startOf('hour').toDate()
-      const latestOrderedList = this.plots.sort((a, b) => new Date(b.copyPhase.endDate) - new Date(a.copyPhase.endDate))
-      const maxDate = latestOrderedList[0].copyPhase.endDate
-      this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
     },
     send () {
       const readers = []
