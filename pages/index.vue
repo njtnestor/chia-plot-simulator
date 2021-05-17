@@ -65,41 +65,51 @@ export default {
       })
     },
     processPlotLogs (logs) {
+      const logsToProcess = []
       logs.forEach((log) => {
-        const plot = {
-          phaseOne: {
-            startDate: log.split('Starting phase 1/4: Forward Propagation into tmp files... ')[1].split('\n')[0],
-            endDate: log.split('Time for phase 1 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-            duration: log.split('Time for phase 1 = ')[1].split('\n')[0].split(' ')[0]
-          },
-          phaseTwo: {
-            startDate: log.split('Starting phase 2/4: Backpropagation into tmp files... ')[1].split('\n')[0],
-            endDate: log.split('Time for phase 2 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-            duration: log.split('Time for phase 2 = ')[1].split('\n')[0].split(' ')[0]
-          },
-          phaseThree: {
-            startDate: log.split('Starting phase 3/4: ')[1].split('\n')[0].split('... ')[1],
-            endDate: log.split('Time for phase 3 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-            duration: log.split('Time for phase 3 = ')[1].split('\n')[0].split(' ')[0]
-          },
-          phaseFour: {
-            startDate: log.split('Starting phase 4/4: ')[1].split('\n')[0].split('... ')[1],
-            endDate: log.split('Time for phase 4 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-            duration: log.split('Time for phase 4 = ')[1].split('\n')[0].split(' ')[0]
-          },
-          copyPhase: {
-            startDate: log.split('Time for phase 4 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-            endDate: log.split('Copy time = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-            duration: log.split('Copy time = ')[1].split('\n')[0].split(' ')[0]
-          },
-          totalTime: log.split('Total time = ')[1].split('\n')[0].split(' ')[0],
-          plotSize: log.split('Plot size is: ')[1].split('\n')[0],
-          ram: log.split('Buffer size is: ')[1].split('\n')[0],
-          buckets: log.split('Buffer size is: ')[1].split('\n')[1].split(' ')[1],
-          threads: log.split('Buffer size is: ')[1].split('\n')[2].split(' ')[1],
-          id: log.split('ID: ')[1].split('\n')[0]
+        const isFinished = !!log.split('Copy time = ')[1]
+        if (isFinished) {
+          const plot = {
+            phaseOne: {
+              startDate: log.split('Starting phase 1/4: Forward Propagation into tmp files... ')[1].split('\n')[0],
+              endDate: log.split('Time for phase 1 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
+              duration: log.split('Time for phase 1 = ')[1].split('\n')[0].split(' ')[0]
+            },
+            phaseTwo: {
+              startDate: log.split('Starting phase 2/4: Backpropagation into tmp files... ')[1].split('\n')[0],
+              endDate: log.split('Time for phase 2 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
+              duration: log.split('Time for phase 2 = ')[1].split('\n')[0].split(' ')[0]
+            },
+            phaseThree: {
+              startDate: log.split('Starting phase 3/4: ')[1].split('\n')[0].split('... ')[1],
+              endDate: log.split('Time for phase 3 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
+              duration: log.split('Time for phase 3 = ')[1].split('\n')[0].split(' ')[0]
+            },
+            phaseFour: {
+              startDate: log.split('Starting phase 4/4: ')[1].split('\n')[0].split('... ')[1],
+              endDate: log.split('Time for phase 4 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
+              duration: log.split('Time for phase 4 = ')[1].split('\n')[0].split(' ')[0]
+            },
+            copyPhase: {
+              startDate: log.split('Time for phase 4 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
+              endDate: log.split('Copy time = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
+              duration: log.split('Copy time = ')[1].split('\n')[0].split(' ')[0]
+            },
+            totalTime: log.split('Total time = ')[1].split('\n')[0].split(' ')[0],
+            plotSize: log.split('Plot size is: ')[1].split('\n')[0],
+            ram: log.split('Buffer size is: ')[1].split('\n')[0],
+            buckets: log.split('Buffer size is: ')[1].split('\n')[1].split(' ')[1],
+            threads: log.split('Buffer size is: ')[1].split('\n')[2].split(' ')[1],
+            id: log.split('ID: ')[1].split('\n')[0]
+          }
+          console.log(plot)
+          logsToProcess.push(plot)
         }
-        console.log(plot)
+      })
+
+      logsToProcess.sort((a, b) => a.phaseOne.startDate - b.phaseOne.startDate)
+
+      logsToProcess.forEach((plot) => {
         this.plots.push(plot)
         this.addPlotTasks(plot)
       })
