@@ -49,6 +49,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/bootstrap
     'bootstrap-vue/nuxt',
+    'nuxt-i18n',
     ['nuxt-cookie-control', {
       colors: {
         barTextColor: '#fff',
@@ -83,6 +84,29 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+  },
+  i18n: {
+    locales: [
+      {
+        code: 'es',
+        iso: 'es-ES',
+        name: 'Español',
+        file: 'es-es.js'
+      },
+      {
+        code: 'en',
+        iso: 'en-US',
+        name: 'English',
+        file: 'en-us.js'
+      }
+    ],
+    detectBrowserLanguage: false,
+    noPrefixDefaultLocale: true,
+    lazy: true,
+    langDir: 'lang/',
+    defaultLocale: 'en',
+    baseUrl: 'https://chiaplotsimulator.com',
+    seo: false
   },
   cookies: {
     necessary: [

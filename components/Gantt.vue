@@ -90,7 +90,7 @@ export default {
         },
         {
           name: 'minute',
-          min_column_width: 30,
+          min_column_width: 100,
           scales: [
             { unit: 'minute', step: 15, format: '%i' },
             { unit: 'hour', step: 1, format: '%Hh' }

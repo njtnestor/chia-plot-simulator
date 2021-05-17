@@ -2,21 +2,21 @@
   <div style="min-height: inherit">
     <div class="newPlotContainer py-3">
       <b-button v-if="!newPlot" variant="primary" @click="newPlot=!newPlot">
-        New plot
+        {{ $t('ganttPage.createPlot') }}
       </b-button>
 
       <div v-if="newPlot">
         <b-form-file
           v-model="file"
-          placeholder="Choose a plot log file or drop it here..."
-          drop-placeholder="Drop plot log file here..."
+          :placeholder="$t('ganttPage.plotFileSelect.placeholder')"
+          :drop-placeholder="$t('ganttPage.plotFileSelect.placeholder')"
         />
 
         <b-button class="mt-2" variant="primary" :disabled="!file" @click="send">
-          Create
+          {{ $t('general.create') }}
         </b-button>
         <b-button v-if="newPlot" class="mt-2" @click="newPlot=false">
-          Cancel
+          {{ $t('general.cancel') }}
         </b-button>
       </div>
     </div>
@@ -40,12 +40,12 @@ export default {
   },
   head () {
     return {
-      title: 'Chia Plot Simulator - Analyze your plotting time',
+      title: this.$t('ganttPage.meta.title'),
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content: 'This plotting simulator will help you to plot faster, find errors visually, analyze if it went as you had planned and earn more chias (XCH).'
+          content: this.$t('ganttPage.meta.description')
         }
       ]
     }
@@ -58,7 +58,6 @@ export default {
         end_date: new Date(plot.copyPhase.endDate),
         totalTime: plot.totalTime,
         progress: 1,
-        holder: 'hi',
         size: `k${plot.plotSize}`,
         threads: plot.threads,
         ram: plot.ram,
@@ -66,7 +65,7 @@ export default {
         render: 'split'
       })
       this.$gantt().addTask({
-        text: 'PHASE 1',
+        text: this.$t('ganttPage.plot.phase1'),
         start_date: new Date(plot.phaseOne.startDate),
         totalTime: plot.phaseOne.duration,
         end_date: new Date(plot.phaseOne.endDate),
@@ -76,7 +75,7 @@ export default {
         parent: taskId
       })
       this.$gantt().addTask({
-        text: 'PHASE 2',
+        text: this.$t('ganttPage.plot.phase2'),
         start_date: new Date(plot.phaseTwo.startDate),
         totalTime: plot.phaseTwo.duration,
         end_date: new Date(plot.phaseTwo.endDate),
@@ -87,7 +86,7 @@ export default {
       })
       this.$gantt().addTask({
 
-        text: 'PHASE 3',
+        text: this.$t('ganttPage.plot.phase3'),
         start_date: new Date(plot.phaseThree.startDate),
         totalTime: plot.phaseThree.duration,
         end_date: new Date(plot.phaseThree.endDate),
@@ -97,7 +96,7 @@ export default {
         open: false
       })
       this.$gantt().addTask({
-        text: 'PHASE 4',
+        text: this.$t('ganttPage.plot.phase4'),
         start_date: new Date(plot.phaseFour.startDate),
         totalTime: plot.phaseFour.duration,
         end_date: new Date(plot.phaseFour.endDate),
@@ -107,7 +106,7 @@ export default {
         open: false
       })
       this.$gantt().addTask({
-        text: 'COPY',
+        text: this.$t('ganttPage.plot.phaseCopy'),
         start_date: new Date(plot.copyPhase.startDate),
         totalTime: plot.copyPhase.duration,
         end_date: new Date(plot.copyPhase.endDate),
@@ -163,7 +162,6 @@ export default {
           threads: reader.result.split('Buffer size is: ')[1].split('\n')[2].split(' ')[1],
           id: reader.result.split('ID: ')[1].split('\n')[0]
         }
-        console.log(plot)
         this.plots.push(plot)
         this.addPlotTasks(plot)
       }
