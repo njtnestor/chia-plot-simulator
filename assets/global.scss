@@ -2,6 +2,10 @@ a {
   color: #35a75a;
 }
 $primary: #35a75a !default;
+
+.navbar-light .navbar-nav .nav-link{
+  color: $primary !important;
+}
 // Bootstrap and its default variables
 @import '../node_modules/bootstrap/scss/bootstrap';
 // BootstrapVue and its default variables

@@ -17,7 +17,6 @@ export default {
   },
   data () {
     return {
-      hi: false,
       file: undefined
     }
   },
@@ -43,33 +42,33 @@ export default {
     ]
     this.$gantt().config.columns = [
       // { name: 'text', label: 'Task name', width: '*', tree: true },
-      { name: 'start_date', label: 'Start time', align: 'center', width: 150 },
+      { name: 'start_date', label: this.$t('ganttPage.fields.startDate'), align: 'center', width: 150 },
       {
         name: 'duration',
-        label: 'Duration',
+        label: this.$t('ganttPage.fields.duration'),
         align: 'center',
         template (obj) {
           return (obj.totalTime) ? new Date(Number(obj.totalTime) * 1000).toISOString().substr(11, 8) : ''
         }
       },
-      { name: 'threads', label: 'Threads', align: 'center', width: 50 },
-      { name: 'ram', label: 'Ram', align: 'center' },
-      { name: 'size', label: 'Size', align: 'center', width: 50 }
+      { name: 'threads', label: this.$t('ganttPage.fields.threads'), align: 'center', width: 50 },
+      { name: 'ram', label: this.$t('ganttPage.fields.ram'), align: 'center' },
+      { name: 'size', label: this.$t('ganttPage.fields.size'), align: 'center', width: 50 }
       // { name: 'add', label: '', width: 44 }
     ]
 
     this.$gantt().plugins({
       tooltip: true
     })
-    this.$gantt().templates.tooltip_text = function (start, end, task) {
+    this.$gantt().templates.tooltip_text = (start, end, task) => {
       const isParent = !task.parent
       const name = isParent ? task.id : task.text
       const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
 
-      return `<b>${isParent ? 'Plot ID' : 'Phase'}:</b> ${name}
-              <br/><b>Duration:</b> ${duration}
-              <br/><b>Start date:</b> ${start.toLocaleString()}
-              <br/><b>End date:</b> ${end.toLocaleString()}`
+      return `<b>${isParent ? 'Plot ID' : this.$t('ganttPage.fields.phase')}:</b> ${name}
+              <br/><b>${this.$t('ganttPage.fields.duration')}:</b> ${duration}
+              <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
+              <br/><b>${this.$t('ganttPage.fields.endDate')}</b> ${end.toLocaleString()}`
     }
     const zoomConfig = {
       levels: [

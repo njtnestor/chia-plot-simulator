@@ -9,9 +9,17 @@
         <b-form-file
           v-model="files"
           multiple
-          placeholder="Choose a plot log file or drop it here..."
-          drop-placeholder="Drop plot log file here..."
+          :placeholder="$t('ganttPage.plotFileSelect.placeholder')"
+          :drop-placeholder="$t('ganttPage.plotFileSelect.placeholder')"
         />
+
+        <!--<div>
+          <div>Find it in:</div>
+          <small class="text-muted"><b>Windows:</b> C:\Users\{your_user_name}\.chia\mainnet\plotter</small>
+        </div>
+        <div>
+          <small class="text-muted"><b>Linux:</b> /home/{your_user_name}/.chia/mainnet/plotter</small>
+        </div>-->
 
         <b-button class="mt-2" variant="primary" :disabled="!files.length" @click="send">
           {{ $t('general.create') }}
