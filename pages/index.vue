@@ -7,12 +7,13 @@
 
       <div v-if="newPlot">
         <b-form-file
-          v-model="file"
-          :placeholder="$t('ganttPage.plotFileSelect.placeholder')"
-          :drop-placeholder="$t('ganttPage.plotFileSelect.placeholder')"
+          v-model="files"
+          multiple
+          placeholder="Choose a plot log file or drop it here..."
+          drop-placeholder="Drop plot log file here..."
         />
 
-        <b-button class="mt-2" variant="primary" :disabled="!file" @click="send">
+        <b-button class="mt-2" variant="primary" :disabled="!files.length" @click="send">
           {{ $t('general.create') }}
         </b-button>
         <b-button v-if="newPlot" class="mt-2" @click="newPlot=false">
@@ -30,7 +31,7 @@ import dayjs from 'dayjs'
 export default {
   data () {
     return {
-      file: undefined,
+      files: [],
       newPlot: false,
       plots: [],
       tasks: {
@@ -51,6 +52,75 @@ export default {
     }
   },
   methods: {
+    readFile (file) {
+      return new Promise((resolve, reject) => {
+        const fr = new FileReader()
+        fr.onload = () => {
+          resolve(fr.result)
+        }
+        fr.onerror = () => {
+          reject(fr)
+        }
+        fr.readAsText(file)
+      })
+    },
+    processPlotLogs (logs) {
+      const logsToProcess = []
+      logs.forEach((log) => {
+        const isFinished = !!log.split('Copy time = ')[1]
+        if (isFinished) {
+          const plot = {
+            phaseOne: {
+              startDate: log.split('Starting phase 1/4: Forward Propagation into tmp files... ')[1].split('\n')[0],
+              endDate: log.split('Time for phase 1 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
+              duration: log.split('Time for phase 1 = ')[1].split('\n')[0].split(' ')[0]
+            },
+            phaseTwo: {
+              startDate: log.split('Starting phase 2/4: Backpropagation into tmp files... ')[1].split('\n')[0],
+              endDate: log.split('Time for phase 2 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
+              duration: log.split('Time for phase 2 = ')[1].split('\n')[0].split(' ')[0]
+            },
+            phaseThree: {
+              startDate: log.split('Starting phase 3/4: ')[1].split('\n')[0].split('... ')[1],
+              endDate: log.split('Time for phase 3 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
+              duration: log.split('Time for phase 3 = ')[1].split('\n')[0].split(' ')[0]
+            },
+            phaseFour: {
+              startDate: log.split('Starting phase 4/4: ')[1].split('\n')[0].split('... ')[1],
+              endDate: log.split('Time for phase 4 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
+              duration: log.split('Time for phase 4 = ')[1].split('\n')[0].split(' ')[0]
+            },
+            copyPhase: {
+              startDate: log.split('Time for phase 4 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
+              endDate: log.split('Copy time = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
+              duration: log.split('Copy time = ')[1].split('\n')[0].split(' ')[0]
+            },
+            totalTime: log.split('Total time = ')[1].split('\n')[0].split(' ')[0],
+            plotSize: log.split('Plot size is: ')[1].split('\n')[0],
+            ram: log.split('Buffer size is: ')[1].split('\n')[0],
+            buckets: log.split('Buffer size is: ')[1].split('\n')[1].split(' ')[1],
+            threads: log.split('Buffer size is: ')[1].split('\n')[2].split(' ')[1],
+            id: log.split('ID: ')[1].split('\n')[0]
+          }
+          logsToProcess.push(plot)
+        }
+      })
+
+      logsToProcess
+        .sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
+        .forEach((plot) => {
+          this.plots.push(plot)
+          this.addPlotTasks(plot)
+        })
+
+      /* Get earliest date and latest date */
+      const earliestOrderedList = this.plots.sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
+      const minDate = earliestOrderedList[0].phaseOne.startDate
+      this.$gantt().config.start_date = dayjs(minDate).startOf('hour').toDate()
+      const latestOrderedList = this.plots.sort((a, b) => new Date(b.copyPhase.endDate) - new Date(a.copyPhase.endDate))
+      const maxDate = latestOrderedList[0].copyPhase.endDate
+      this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
+    },
     addPlotTasks (plot) {
       const taskId = this.$gantt().addTask({
         text: plot.id,
@@ -115,58 +185,23 @@ export default {
         parent: taskId,
         open: false
       })
-      /* Get earliest date and latest date */
-      const earliestOrderedList = this.plots.sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
-      const minDate = earliestOrderedList[0].phaseOne.startDate
-      this.$gantt().config.start_date = dayjs(minDate).startOf('hour').toDate()
-      const latestOrderedList = this.plots.sort((a, b) => new Date(b.copyPhase.endDate) - new Date(a.copyPhase.endDate))
-      const maxDate = latestOrderedList[0].copyPhase.endDate
-      this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
     },
     send () {
-      // this.$gantt().parse(this.tasks)
-      const reader = new FileReader()
+      const readers = []
 
-      reader.onload = () => {
-        // console.log(reader.result)
-        const plot = {
-          phaseOne: {
-            startDate: reader.result.split('Starting phase 1/4: Forward Propagation into tmp files... ')[1].split('\n')[0],
-            endDate: reader.result.split('Time for phase 1 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-            duration: reader.result.split('Time for phase 1 = ')[1].split('\n')[0].split(' ')[0]
-          },
-          phaseTwo: {
-            startDate: reader.result.split('Starting phase 2/4: Backpropagation into tmp files... ')[1].split('\n')[0],
-            endDate: reader.result.split('Time for phase 2 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-            duration: reader.result.split('Time for phase 2 = ')[1].split('\n')[0].split(' ')[0]
-          },
-          phaseThree: {
-            startDate: reader.result.split('Starting phase 3/4: ')[1].split('\n')[0].split('... ')[1],
-            endDate: reader.result.split('Time for phase 3 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-            duration: reader.result.split('Time for phase 3 = ')[1].split('\n')[0].split(' ')[0]
-          },
-          phaseFour: {
-            startDate: reader.result.split('Starting phase 4/4: ')[1].split('\n')[0].split('... ')[1],
-            endDate: reader.result.split('Time for phase 4 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-            duration: reader.result.split('Time for phase 4 = ')[1].split('\n')[0].split(' ')[0]
-          },
-          copyPhase: {
-            startDate: reader.result.split('Time for phase 4 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-            endDate: reader.result.split('Copy time = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-            duration: reader.result.split('Copy time = ')[1].split('\n')[0].split(' ')[0]
-          },
-          totalTime: reader.result.split('Total time = ')[1].split('\n')[0].split(' ')[0],
-          plotSize: reader.result.split('Plot size is: ')[1].split('\n')[0],
-          ram: reader.result.split('Buffer size is: ')[1].split('\n')[0],
-          buckets: reader.result.split('Buffer size is: ')[1].split('\n')[1].split(' ')[1],
-          threads: reader.result.split('Buffer size is: ')[1].split('\n')[2].split(' ')[1],
-          id: reader.result.split('ID: ')[1].split('\n')[0]
-        }
-        this.plots.push(plot)
-        this.addPlotTasks(plot)
-      }
-      reader.readAsText(this.file)
-      this.newPlot = false
+      // Store promises in array
+      this.files.forEach((file) => {
+        readers.push(this.readFile(file))
+      })
+
+      // Trigger Promises
+      Promise.all(readers).then((values) => {
+        // Values will be an array that contains an item
+        // with the text of every selected file
+        // ["File1 Content", "File2 Content" ... "FileN Content"]
+        this.processPlotLogs(values)
+        this.newPlot = false
+      })
     }
   }
 }
