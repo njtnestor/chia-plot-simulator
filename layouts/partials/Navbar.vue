@@ -2,7 +2,7 @@
   <div class="nav-wrapper">
     <b-navbar toggleable="lg">
       <b-navbar-brand>
-        <nuxt-link class="nav-link" to="/">
+        <nuxt-link class="nav-link" :to="localePath('/')">
           <b>ChiaPlotSimulator</b>
         </nuxt-link>
       </b-navbar-brand>
@@ -10,15 +10,16 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
           <li class="nav-item">
-            <nuxt-link class="nav-link" to="/colaborate-help">
-              Colaborate/help
+            <nuxt-link class="nav-link" :to="localePath('/colaborate-help')">
+              {{ $t('navBar.colaborate') }}
             </nuxt-link>
           </li>
           <li class="nav-item">
-            <nuxt-link class="nav-link" to="/about">
-              About
+            <nuxt-link class="nav-link" :to="localePath('/about')">
+              {{ $t('navBar.about') }}
             </nuxt-link>
           </li>
+          <SwitchLang class="nav-item" />
           <!--<SwitchLang v-if="!isContentPage" class="nav-item" />-->
         </b-navbar-nav>
       </b-collapse>
