@@ -6,7 +6,18 @@
 
 <script>
 export default {
-
+  head () {
+    return {
+      title: this.$t('ganttPage.meta.title'),
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.$t('ganttPage.meta.description')
+        }
+      ]
+    }
+  }
 }
 </script>
 
