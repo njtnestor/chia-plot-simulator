@@ -53,7 +53,8 @@ export default {
       },
       { name: 'threads', label: this.$t('ganttPage.fields.threads'), align: 'center', width: 50 },
       { name: 'ram', label: this.$t('ganttPage.fields.ram'), align: 'center' },
-      { name: 'size', label: this.$t('ganttPage.fields.size'), align: 'center', width: 50 }
+      { name: 'size', label: this.$t('ganttPage.fields.size'), align: 'center', width: 50 },
+      { name: 'buckets', label: this.$t('ganttPage.fields.buckets'), align: 'center', width: 50 }
       // { name: 'add', label: '', width: 44 }
     ]
 

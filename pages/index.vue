@@ -115,6 +115,7 @@ export default {
             threads: log.split('Buffer size is: ')[1].split('\n')[2].split(' ')[1],
             id: log.split('ID: ')[1].split('\n')[0]
           }
+          console.log(plot)
           logsToProcess.push(plot)
         }
       })
@@ -143,6 +144,7 @@ export default {
         progress: 1,
         size: `k${plot.plotSize}`,
         threads: plot.threads,
+        buckets: plot.buckets,
         ram: plot.ram,
         open: false,
         render: 'split'
