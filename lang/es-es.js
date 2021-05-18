@@ -28,6 +28,7 @@ export default {
       threads: 'Threads',
       ram: 'RAM',
       size: 'Tamaño',
+      buckets: 'Buckets',
       phase: 'Fase',
       duration: 'Duración',
       startDate: 'Fecha de inicio',
