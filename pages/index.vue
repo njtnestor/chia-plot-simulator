@@ -12,12 +12,18 @@
           :placeholder="$t('ganttPage.plotFileSelect.placeholder')"
           :drop-placeholder="$t('ganttPage.plotFileSelect.placeholder')"
         />
-
+        <b-tooltip placement="bottom-right" target="tooltip-target-1" triggers="hover" variant="dark">
+          <div>
+            <small><b>Windows:</b> C:\Users\{your_user_name}\.chia\mainnet\plotter</small>
+          </div>
+          <div>
+            <small><b>Linux:</b> /home/{your_user_name}/.chia/mainnet/plotter</small>
+          </div>
+        </b-tooltip>
         <div>
-          <small class="text-muted"><b>Windows:</b> C:\Users\{your_user_name}\.chia\mainnet\plotter</small>
-        </div>
-        <div>
-          <small class="text-muted"><b>Linux:</b> /home/{your_user_name}/.chia/mainnet/plotter</small>
+          <b-button id="tooltip-target-1" class="mt-2 text-decoration-none pl-0" variant="link" :active="true">
+            {{ $t('ganttPage.tooltipLog') }}
+          </b-button>
         </div>
 
         <b-button class="mt-2" variant="primary" :disabled="!files.length" @click="send">

@@ -8,6 +8,7 @@ export default {
     about: 'Acerca de'
   },
   ganttPage: {
+    tooltipLog: 'Donde estan mis archivos de log?',
     meta: {
       title: 'Simulador de ploteo de Chia - Analiza tu tiempo de ploteo',
       description: 'Este simulador de ploteo te ayudará a plotear más rápido, a encontrar errores visualmente, a analizar si salió como habías planeado y a ganar más chias (XCH)'

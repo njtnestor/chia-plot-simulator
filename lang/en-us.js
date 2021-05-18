@@ -8,6 +8,7 @@ export default {
     about: 'About'
   },
   ganttPage: {
+    tooltipLog: 'Where can I find my log files?',
     meta: {
       title: 'Chia Plot Simulator - Analyze your plotting time',
       description: 'This plotting simulator will help you to plot faster, find errors visually, analyze if it went as you had planned and earn more chias (XCH).'

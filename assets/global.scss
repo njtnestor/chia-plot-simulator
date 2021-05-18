@@ -6,6 +6,10 @@ $primary: #35a75a !default;
 .navbar-light .navbar-nav .nav-link{
   color: $primary !important;
 }
+.tooltip .tooltip-inner{
+  max-width: 500px !important;
+  width: 400px !important;
+}
 // Bootstrap and its default variables
 @import '../node_modules/bootstrap/scss/bootstrap';
 // BootstrapVue and its default variables
