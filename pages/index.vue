@@ -115,7 +115,7 @@ export default {
             threads: log.split('Buffer size is: ')[1].split('\n')[2].split(' ')[1],
             id: log.split('ID: ')[1].split('\n')[0]
           }
-          console.log(plot)
+          //console.log(plot)
           logsToProcess.push(plot)
         }
       })
