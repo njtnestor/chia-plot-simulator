@@ -34,7 +34,7 @@
         </b-button>
       </div>
     </div>
-    <Gantt class="left-container" :tasks="tasks" />
+    <Gantt class="left-container" />
   </div>
 </template>
 
@@ -46,10 +46,7 @@ export default {
     return {
       files: [],
       newPlot: false,
-      plots: [],
-      tasks: {
-        data: []
-      }
+      plots: []
     }
   },
   head () {
@@ -108,6 +105,7 @@ export default {
               endDate: log.split('Copy time = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
               duration: log.split('Copy time = ')[1].split('\n')[0].split(' ')[0]
             },
+            diskTemp1Name: log.split('Starting plotting progress into temporary dirs: ')[1].split('\n')[0].split(' ')[0],
             totalTime: log.split('Total time = ')[1].split('\n')[0].split(' ')[0],
             plotSize: log.split('Plot size is: ')[1].split('\n')[0],
             ram: log.split('Buffer size is: ')[1].split('\n')[0],
@@ -115,7 +113,8 @@ export default {
             threads: log.split('Buffer size is: ')[1].split('\n')[2].split(' ')[1],
             id: log.split('ID: ')[1].split('\n')[0]
           }
-          //console.log(plot)
+
+          console.log(plot)
           logsToProcess.push(plot)
         }
       })
@@ -146,6 +145,7 @@ export default {
         threads: plot.threads,
         buckets: plot.buckets,
         ram: plot.ram,
+        diskTemp1Name: plot.diskTemp1Name,
         open: false,
         render: 'split'
       })
@@ -202,6 +202,7 @@ export default {
       })
     },
     send () {
+      const diskTemp1NameDic = []
       const readers = []
 
       // Store promises in array
@@ -215,6 +216,15 @@ export default {
         // with the text of every selected file
         // ["File1 Content", "File2 Content" ... "FileN Content"]
         this.processPlotLogs(values)
+
+        for (const plot of this.plots) {
+          // console.log(plot)
+
+          if (!diskTemp1NameDic.includes(plot.diskTemp1Name)) {
+            diskTemp1NameDic.push(plot.diskTemp1Name)
+          }
+        }
+        console.log(diskTemp1NameDic)
         this.newPlot = false
       })
     }

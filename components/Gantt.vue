@@ -7,14 +7,6 @@ import dayjs from 'dayjs'
 
 export default {
   name: 'Gantt',
-  props: {
-    tasks: {
-      type: Object,
-      default () {
-        return { data: [], links: [] }
-      }
-    }
-  },
   data () {
     return {
       file: undefined
@@ -51,10 +43,11 @@ export default {
           return (obj.totalTime) ? new Date(Number(obj.totalTime) * 1000).toISOString().substr(11, 8) : ''
         }
       },
-      { name: 'threads', label: this.$t('ganttPage.fields.threads'), align: 'center', width: 50 },
+      { name: 'threads', label: this.$t('ganttPage.fields.threads'), align: 'center', width: 50, resize: true, hide: true },
       { name: 'ram', label: this.$t('ganttPage.fields.ram'), align: 'center' },
       { name: 'size', label: this.$t('ganttPage.fields.size'), align: 'center', width: 50 },
-      { name: 'buckets', label: this.$t('ganttPage.fields.buckets'), align: 'center', width: 50 }
+      { name: 'buckets', label: this.$t('ganttPage.fields.buckets'), align: 'center', width: 50 },
+      { name: 'diskTemp1Name', label: this.$t('ganttPage.fields.buckets'), align: 'center', width: 90 }
       // { name: 'add', label: '', width: 44 }
     ]
 
@@ -103,13 +96,11 @@ export default {
         return this.$gantt().$root.querySelector('.gantt_task')
       }
     }
-
+    this.$gantt().config.order_branch = true
     this.$gantt().ext.zoom.init(zoomConfig)
     this.$gantt().ext.zoom.setLevel('hour')
     this.$gantt().init(this.$refs.gantt)
-    this.$gantt().parse(this.$props.tasks)
-    /* gantt.init(this.$refs.gantt)
-    gantt.parse(this.$props.tasks) */
+    // this.$gantt().parse(this.$props.tasks)
   }
 
 }
