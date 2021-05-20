@@ -78,7 +78,8 @@ export default {
         checkboxInactiveCircleBackground: '#fff',
         checkboxDisabledCircleBackground: '#fff'
       }
-    }]
+    }],
+    '@nuxtjs/sitemap'
 
   ],
 
@@ -107,6 +108,10 @@ export default {
     defaultLocale: 'en',
     baseUrl: 'https://chiaplotsimulator.com',
     seo: false
+  },
+  sitemap: {
+    hostname: 'https://www.chiaplotsimulator.com',
+    i18n: true
   },
   cookies: {
     necessary: [
