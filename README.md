@@ -12,7 +12,7 @@ Help us to debug the application by creating issues of any problem you have with
 
 ## Changelog
 
-Check us [changelog](CHANGELOG.MD)
+Check us [changelog](CHANGELOG.md)
 
 ## Collaborate:  
 If you enjoy the application and use it often, you can send us a small tip and it **helps us to spend more time developing new features**.  
