@@ -18,6 +18,9 @@ export default {
   components: {
     Navbar,
     Footer
+  },
+  head () {
+    return this.$nuxtI18nHead({ addSeoAttributes: true, addDirAttribute: true })
   }
 }
 </script>

@@ -85,7 +85,7 @@ export default {
               duration: log.split('Time for phase 1 = ')[1].split('\n')[0].split(' ')[0]
             },
             phaseTwo: {
-              startDate: log.split('Starting phase 2/4: Backpropagation into tmp files... ')[1].split('\n')[0],
+              startDate: log.split('Starting phase 2/4: ')[1].split('\n')[0].split('... ')[1],
               endDate: log.split('Time for phase 2 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
               duration: log.split('Time for phase 2 = ')[1].split('\n')[0].split(' ')[0]
             },
