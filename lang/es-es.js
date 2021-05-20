@@ -22,10 +22,11 @@ export default {
       phase2: 'FASE 2',
       phase3: 'FASE 3',
       phase4: 'FASE 4',
-      phaseCopy: 'COPY'
+      phaseCopy: 'COPY',
+      diskTemp1Name: 'Disco Temp 1'
     },
     fields: {
-      threads: 'Threads',
+      threads: 'Hilos',
       ram: 'RAM',
       size: 'Tamaño',
       buckets: 'Buckets',

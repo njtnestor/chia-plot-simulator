@@ -4,7 +4,6 @@
       <b-button v-if="!newPlot" variant="primary" @click="newPlot=!newPlot">
         {{ $t('ganttPage.createPlot') }}
       </b-button>
-
       <div v-if="newPlot">
         <b-form-file
           v-model="files"
@@ -40,7 +39,7 @@
 
 <script>
 import dayjs from 'dayjs'
-
+import { DiskColors } from '@/utils/constants/colors'
 export default {
   data () {
     return {
@@ -113,8 +112,6 @@ export default {
             threads: log.split('Buffer size is: ')[1].split('\n')[2].split(' ')[1],
             id: log.split('ID: ')[1].split('\n')[0]
           }
-
-          console.log(plot)
           logsToProcess.push(plot)
         }
       })
@@ -202,7 +199,8 @@ export default {
       })
     },
     send () {
-      const diskTemp1NameDic = []
+      const diskTemp1NameDic = {}
+      let nextColor = 0
       const readers = []
 
       // Store promises in array
@@ -216,15 +214,18 @@ export default {
         // with the text of every selected file
         // ["File1 Content", "File2 Content" ... "FileN Content"]
         this.processPlotLogs(values)
-
         for (const plot of this.plots) {
-          // console.log(plot)
-
-          if (!diskTemp1NameDic.includes(plot.diskTemp1Name)) {
-            diskTemp1NameDic.push(plot.diskTemp1Name)
+          if (!(plot.diskTemp1Name in diskTemp1NameDic)) {
+            diskTemp1NameDic[plot.diskTemp1Name] = DiskColors[nextColor]
+            nextColor++
           }
         }
-        console.log(diskTemp1NameDic)
+        this.$gantt().templates.grid_row_class = function (start, end, task) {
+          if (task.diskTemp1Name in diskTemp1NameDic) {
+            return `disk-color-${diskTemp1NameDic[task.diskTemp1Name]}`
+          }
+          return ''
+        }
         this.newPlot = false
       })
     }

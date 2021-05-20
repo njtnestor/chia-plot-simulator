@@ -34,21 +34,19 @@ export default {
     ]
     this.$gantt().config.columns = [
       // { name: 'text', label: 'Task name', width: '*', tree: true },
-      { name: 'start_date', label: this.$t('ganttPage.fields.startDate'), align: 'center', width: 150 },
+      { name: 'start_date', label: this.$t('ganttPage.fields.startDate'), align: 'center', width: 120 },
       {
         name: 'duration',
         label: this.$t('ganttPage.fields.duration'),
         align: 'center',
+        width: 80,
+        sort: false,
         template (obj) {
           return (obj.totalTime) ? new Date(Number(obj.totalTime) * 1000).toISOString().substr(11, 8) : ''
         }
       },
-      { name: 'threads', label: this.$t('ganttPage.fields.threads'), align: 'center', width: 50, resize: true, hide: true },
-      { name: 'ram', label: this.$t('ganttPage.fields.ram'), align: 'center' },
-      { name: 'size', label: this.$t('ganttPage.fields.size'), align: 'center', width: 50 },
-      { name: 'buckets', label: this.$t('ganttPage.fields.buckets'), align: 'center', width: 50 },
-      { name: 'diskTemp1Name', label: this.$t('ganttPage.fields.buckets'), align: 'center', width: 90 }
-      // { name: 'add', label: '', width: 44 }
+      { name: 'threads', label: this.$t('ganttPage.fields.threads'), align: 'center', width: 50, sort: false },
+      { name: 'ram', label: this.$t('ganttPage.fields.ram'), align: 'center', width: 80, sort: false }
     ]
 
     this.$gantt().plugins({
@@ -56,13 +54,23 @@ export default {
     })
     this.$gantt().templates.tooltip_text = (start, end, task) => {
       const isParent = !task.parent
-      const name = isParent ? task.id : task.text
-      const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
-
-      return `<b>${isParent ? 'Plot ID' : this.$t('ganttPage.fields.phase')}:</b> ${name}
+      if (isParent) {
+        const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
+        return `<b>Plot ID:</b> ${task.id}
+              <br/><b>${this.$t('ganttPage.fields.duration')}:</b> ${duration}
+              <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
+              <br/><b>${this.$t('ganttPage.fields.endDate')}:</b> ${end.toLocaleString()}
+              <br/><b>${this.$t('ganttPage.fields.diskTemp1Name')}:</b> ${task.diskTemp1Name}
+              <br/><b>${this.$t('ganttPage.fields.size')}:</b> ${task.size}
+              <br/><b>${this.$t('ganttPage.fields.buckets')}:</b> ${task.buckets}
+              `
+      } else {
+        const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
+        return `<b>${this.$t('ganttPage.fields.phase')}:</b> ${task.text}
               <br/><b>${this.$t('ganttPage.fields.duration')}:</b> ${duration}
               <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
               <br/><b>${this.$t('ganttPage.fields.endDate')}</b> ${end.toLocaleString()}`
+      }
     }
     const zoomConfig = {
       levels: [
@@ -97,6 +105,7 @@ export default {
       }
     }
     this.$gantt().config.order_branch = true
+    this.$gantt().config.sort = true
     this.$gantt().ext.zoom.init(zoomConfig)
     this.$gantt().ext.zoom.setLevel('hour')
     this.$gantt().init(this.$refs.gantt)

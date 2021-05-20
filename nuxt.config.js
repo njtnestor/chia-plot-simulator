@@ -4,7 +4,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'chia-plotter-simulator',
+    title: 'chia-plot-simulator',
     htmlAttrs: {
       lang: 'en'
     },

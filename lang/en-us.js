@@ -32,7 +32,8 @@ export default {
       phase: 'Phase',
       duration: 'Duration',
       startDate: 'Start date',
-      endDate: 'End date'
+      endDate: 'End date',
+      diskTemp1Name: 'Disk Temp 1'
     }
   },
   colaboratePage: {
