@@ -10,6 +10,10 @@ Check our [Road map](https://trello.com/b/kLCX0On6/chia-plot-simulator)
 
 Help us to debug the application by creating issues of any problem you have with the application. Don't forget to attach your log file! 
 
+## Changelog
+
+Check us [changelog](CHANGELOG.MD)
+
 ## Collaborate:  
 If you enjoy the application and use it often, you can send us a small tip and it **helps us to spend more time developing new features**.  
 
