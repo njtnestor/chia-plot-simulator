@@ -22,10 +22,7 @@ export default {
       phase2: 'FASE 2',
       phase3: 'FASE 3',
       phase4: 'FASE 4',
-      phaseCopy: 'COPY',
-      diskTemp1Name: 'Disco Temp 1',
-      diskTemp2Name: 'Disco Temp 2',
-      diskFinal: 'Disco destino'
+      phaseCopy: 'COPY'
     },
     fields: {
       threads: 'Hilos',
@@ -35,7 +32,10 @@ export default {
       phase: 'Fase',
       duration: 'Duración',
       startDate: 'Fecha de inicio',
-      endDate: 'Fecha de finalización'
+      endDate: 'Fecha de finalización',
+      diskTemp1Name: 'Disco Temp 1',
+      diskTemp2Name: 'Disco Temp 2',
+      diskFinal: 'Disco destino'
     }
   },
   colaboratePage: {
