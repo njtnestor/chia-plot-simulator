@@ -46,32 +46,12 @@ export default {
         }
       },
       { name: 'threads', label: this.$t('ganttPage.fields.threads'), align: 'center', width: 50, sort: false },
-      { name: 'ram', label: this.$t('ganttPage.fields.ram'), align: 'center', width: 80, sort: false }
+      { name: 'ram', label: this.$t('ganttPage.fields.ram'), align: 'center', width: 90, sort: false }
     ]
 
     this.$gantt().plugins({
       tooltip: true
     })
-    this.$gantt().templates.tooltip_text = (start, end, task) => {
-      const isParent = !task.parent
-      if (isParent) {
-        const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
-        return `<b>Plot ID:</b> ${task.id}
-              <br/><b>${this.$t('ganttPage.fields.duration')}:</b> ${duration}
-              <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
-              <br/><b>${this.$t('ganttPage.fields.endDate')}:</b> ${end.toLocaleString()}
-              <br/><b>${this.$t('ganttPage.fields.diskTemp1Name')}:</b> ${task.diskTemp1Name}
-              <br/><b>${this.$t('ganttPage.fields.size')}:</b> ${task.size}
-              <br/><b>${this.$t('ganttPage.fields.buckets')}:</b> ${task.buckets}
-              `
-      } else {
-        const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
-        return `<b>${this.$t('ganttPage.fields.phase')}:</b> ${task.text}
-              <br/><b>${this.$t('ganttPage.fields.duration')}:</b> ${duration}
-              <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
-              <br/><b>${this.$t('ganttPage.fields.endDate')}</b> ${end.toLocaleString()}`
-      }
-    }
     const zoomConfig = {
       levels: [
         {
@@ -106,8 +86,8 @@ export default {
     }
     this.$gantt().config.drag_resize = false
 
-    //this.$gantt().config.order_branch = true
-    //this.$gantt().config.drag_progress = false
+    // this.$gantt().config.order_branch = true
+    // this.$gantt().config.drag_progress = false
     this.$gantt().config.drag_move = false
 
     this.$gantt().config.sort = true

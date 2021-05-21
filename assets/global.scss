@@ -62,6 +62,28 @@ $diskColors: '00ffff',
 
 @each $diskColor in $diskColors {
   .disk-color-#{$diskColor} {
-    border-left: 8px solid #{'#'+$diskColor} !important;
+    border-left: 6px solid #{'#'+$diskColor} !important;
+    width: 100%;
+  }
+  .tooltip-disk-color-#{$diskColor} {
+    background-color: #{'#'+$diskColor} !important;
+    display: inline-block; 
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 3px;
+    margin-bottom: -1px;
+  }
+  .disk-final-color-#{$diskColor} {
+    border-right: 6px solid #{'#'+$diskColor};
+  }
+  .tooltip-disk-final-color-#{$diskColor} {
+    background-color: #{'#'+$diskColor} !important;
+    display: inline-block; 
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 3px;
+    margin-bottom: -1px;
   }
 }

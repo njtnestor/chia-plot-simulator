@@ -23,7 +23,9 @@ export default {
       phase3: 'FASE 3',
       phase4: 'FASE 4',
       phaseCopy: 'COPY',
-      diskTemp1Name: 'Disco Temp 1'
+      diskTemp1Name: 'Disco Temp 1',
+      diskTemp2Name: 'Disco Temp 2',
+      diskFinal: 'Disco destino'
     },
     fields: {
       threads: 'Hilos',

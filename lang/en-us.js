@@ -33,7 +33,9 @@ export default {
       duration: 'Duration',
       startDate: 'Start date',
       endDate: 'End date',
-      diskTemp1Name: 'Disk Temp 1'
+      diskTemp1Name: 'Disk Temp 1',
+      diskTemp2Name: 'Disk Temp 2',
+      diskFinal: 'Disk Destination'
     }
   },
   colaboratePage: {

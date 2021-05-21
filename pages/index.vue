@@ -105,6 +105,8 @@ export default {
               duration: log.split('Copy time = ')[1].split('\n')[0].split(' ')[0]
             },
             diskTemp1Name: log.split('Starting plotting progress into temporary dirs: ')[1].split('\n')[0].split(' ')[0],
+            diskTemp2Name: log.split('Starting plotting progress into temporary dirs: ')[1].split('\n')[0].split(' ')[2],
+            diskFinal: log.split('Copied final file from ')[1].split('\n')[0].split(' ')[2].split('plot-')[0],
             totalTime: log.split('Total time = ')[1].split('\n')[0].split(' ')[0],
             plotSize: log.split('Plot size is: ')[1].split('\n')[0],
             ram: log.split('Buffer size is: ')[1].split('\n')[0],
@@ -143,6 +145,8 @@ export default {
         buckets: plot.buckets,
         ram: plot.ram,
         diskTemp1Name: plot.diskTemp1Name,
+        diskTemp2Name: plot.diskTemp2Name,
+        diskFinal: plot.diskFinal,
         open: false,
         render: 'split'
       })
@@ -200,7 +204,9 @@ export default {
     },
     send () {
       const diskTemp1NameDic = {}
-      let nextColor = 0
+      const diskFinalNameDic = {}
+      let nextDiskTemp1Color = 0
+      let nextFinalDiskColor = DiskColors.length - 1
       const readers = []
 
       // Store promises in array
@@ -214,17 +220,45 @@ export default {
         // with the text of every selected file
         // ["File1 Content", "File2 Content" ... "FileN Content"]
         this.processPlotLogs(values)
+
         for (const plot of this.plots) {
           if (!(plot.diskTemp1Name in diskTemp1NameDic)) {
-            diskTemp1NameDic[plot.diskTemp1Name] = DiskColors[nextColor]
-            nextColor++
+            diskTemp1NameDic[plot.diskTemp1Name] = DiskColors[nextDiskTemp1Color] || 'no-colors'
+            nextDiskTemp1Color++
+          }
+          if (!(plot.diskFinal in diskFinalNameDic)) {
+            diskFinalNameDic[plot.diskFinal] = DiskColors[nextFinalDiskColor] || 'no-colors'
+            nextFinalDiskColor--
           }
         }
+
         this.$gantt().templates.grid_row_class = function (start, end, task) {
-          if (task.diskTemp1Name in diskTemp1NameDic) {
-            return `disk-color-${diskTemp1NameDic[task.diskTemp1Name]}`
+          if (task.diskTemp1Name in diskTemp1NameDic && task.diskFinal in diskFinalNameDic) {
+            return `disk-color-${diskTemp1NameDic[task.diskTemp1Name]} disk-final-color-${diskFinalNameDic[task.diskFinal]}`
           }
           return ''
+        }
+        this.$gantt().templates.tooltip_text = (start, end, task) => {
+          const isParent = !task.parent
+          if (isParent) {
+            const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
+            return `<b>Plot ID:</b> ${task.id}
+              <br/><b>${this.$t('ganttPage.fields.duration')}:</b> ${duration}
+              <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
+              <br/><b>${this.$t('ganttPage.fields.endDate')}:</b> ${end.toLocaleString()}
+              <br/><b>${this.$t('ganttPage.fields.size')}:</b> ${task.size}
+              <br/><b>${this.$t('ganttPage.fields.buckets')}:</b> ${task.buckets}
+              <br/><b>${this.$t('ganttPage.fields.diskTemp1Name')}:</b> ${task.diskTemp1Name} ${(task.diskTemp1Name in diskTemp1NameDic) ? `<div class="tooltip-disk-color-${diskTemp1NameDic[task.diskTemp1Name]}"></div>` : null} 
+              <br/><b>${this.$t('ganttPage.fields.diskTemp2Name')}:</b> ${task.diskTemp2Name} 
+              <br/><b>${this.$t('ganttPage.fields.diskFinal')}:</b> ${task.diskFinal} ${(task.diskFinal in diskFinalNameDic) ? `<div class="tooltip-disk-final-color-${diskFinalNameDic[task.diskFinal]}"></div>` : null}
+              `
+          } else {
+            const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
+            return `<b>${this.$t('ganttPage.fields.phase')}:</b> ${task.text}
+              <br/><b>${this.$t('ganttPage.fields.duration')}:</b> ${duration}
+              <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
+              <br/><b>${this.$t('ganttPage.fields.endDate')}</b> ${end.toLocaleString()}`
+          }
         }
         this.newPlot = false
       })
