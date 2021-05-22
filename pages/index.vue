@@ -4,6 +4,9 @@
       <b-button v-if="!newPlot" variant="primary" @click="newPlot=!newPlot">
         {{ $t('ganttPage.createPlot') }}
       </b-button>
+      <b-button v-show="false" variant="primary" @click="example()">
+        example
+      </b-button>
       <div v-if="newPlot">
         <b-form-file
           v-model="files"
@@ -61,6 +64,11 @@ export default {
     }
   },
   methods: {
+    async example () {
+      console.log('llego')
+      const test = await this.$axios.$get('https://tinyurl.com/api-create.php?url=google.es')
+      console.log(test)
+    },
     readFile (file) {
       return new Promise((resolve, reject) => {
         const fr = new FileReader()
