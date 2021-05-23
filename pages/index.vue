@@ -27,6 +27,7 @@
 
 <script>
 import dayjs from 'dayjs'
+import LogParserService from '../services/LogParserService'
 
 export default {
   data () {
@@ -200,6 +201,7 @@ export default {
         // Values will be an array that contains an item
         // with the text of every selected file
         // ["File1 Content", "File2 Content" ... "FileN Content"]
+        LogParserService.processLogFile(values[0])
         this.processPlotLogs(values)
         this.newPlot = false
       })
