@@ -4,8 +4,11 @@
       <b-button v-if="!newPlot" variant="primary" @click="newPlot=!newPlot">
         {{ $t('ganttPage.createPlot') }}
       </b-button>
-      <b-button v-show="false" variant="primary" @click="example()">
-        example
+      <b-button variant="primary" @click="share">
+        {{ $t('ganttPage.share') }}
+      </b-button>
+      <b-button variant="primary" @click="loadFromUrl">
+        {{ $t('ganttPage.load') }}
       </b-button>
       <div v-if="newPlot">
         <b-form-file
@@ -48,7 +51,8 @@ export default {
     return {
       files: [],
       newPlot: false,
-      plots: []
+      plots: [],
+      shareUrl: undefined
     }
   },
   head () {
@@ -63,12 +67,10 @@ export default {
       ]
     }
   },
+  mounted () {
+
+  },
   methods: {
-    async example () {
-      console.log('llego')
-      const test = await this.$axios.$get('https://tinyurl.com/api-create.php?url=google.es')
-      console.log(test)
-    },
     readFile (file) {
       return new Promise((resolve, reject) => {
         const fr = new FileReader()
@@ -80,6 +82,85 @@ export default {
         }
         fr.readAsText(file)
       })
+    },
+    async share () {
+      const objJsonStr = JSON.stringify(this.plots)
+      const objJsonB64 = Buffer.from(objJsonStr).toString('base64')
+      // const encoded = btoa(JSON.stringify(this.plots))
+      this.shareUrl = 'http://localhost:3000/?data=' + objJsonB64
+      if (objJsonB64.length > 10000) {
+        const blockParts = objJsonB64.match(new RegExp('.{1,' + 10000 + '}', 'g'))
+        try {
+          const apiCalls = blockParts.map((part) => {
+            return this.$axios.$get(`https://tinyurl.com/api-create.php?url=www.chiaplotsimulator.com/?data=${part}`)
+          })
+          const results = await Promise.all(apiCalls)
+          const shareParamUrl = results.map(result => result.split('.com/')[1]).join('-')
+          console.log(`https://www.chiaplotsimulator.com/?data=${shareParamUrl}`)
+        } catch (e) {
+          console.log('error', e)
+        }
+      }
+    },
+    async loadFromUrl () {
+      window.onerror = (a, b, c) => {
+        console.log('errrrr', a, b, c)
+      }
+      if (this.$route.query.data) {
+        console.log(this.$route.query.data)
+        const urlBlocks = this.$route.query.data.split('-')
+        let coco
+        try {
+          for (const urlBlock of urlBlocks) {
+            // coco = await this.$axios.$get('https://tinyurl.com/nyqxd', { maxRedirects: 0 })
+            coco = await fetch('https://tinyurl.com/yh4rgnwl',
+              {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: '*/*'
+                  /* 'Access-Control-Allow-Origin': '*',
+                  'Access-Control-Allow-Credentials': 'true',
+                  'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT',
+                  'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Expose-Headers',
+                  'Access-Control-Expose-Headers': 'Location' */
+                },
+                //redirect: 'manual'
+                // mode: 'no-cors'
+              }
+            )
+            console.log('aqui', coco)
+            console.log('aqui2', coco.headers.get('x-auth-token'))
+            for (const pair of coco.headers.entries()) {
+              console.log('yoyo', pair[0] + ': ' + pair[1])
+            }
+            console.log('aqui', coco.headers.entries())
+            console.log('aqui', coco.headers.values())
+            console.log('aqui', coco.headers.get('Location'))
+          }
+        } catch (e) {
+          console.log('error2', JSON.stringify(e))
+          console.log(coco)
+        }
+
+        /* const logsToProcess = JSON.parse(atob(this.$route.query.data))
+        logsToProcess
+          .sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
+          .forEach((plot) => {
+            this.plots.push(plot)
+            this.addPlotTasks(plot)
+          })
+        this.$gantt().eachTask(function (task) { console.log(task) }) */
+
+        /* Get earliest date and latest date */
+        /* const earliestOrderedList = this.plots.sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
+        const minDate = earliestOrderedList[0].phaseOne.startDate
+        this.$gantt().config.start_date = dayjs(minDate).startOf('hour').toDate()
+        const latestOrderedList = this.plots.sort((a, b) => new Date(b.copyPhase.endDate) - new Date(a.copyPhase.endDate))
+        const maxDate = latestOrderedList[0].copyPhase.endDate
+        this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
+        this.$gantt().render() */
+      }
     },
     processPlotLogs (logs) {
       const logsToProcess = []
@@ -142,6 +223,7 @@ export default {
       this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
     },
     addPlotTasks (plot) {
+      console.log('entro')
       const taskId = this.$gantt().addTask({
         text: plot.id,
         start_date: new Date(plot.phaseOne.startDate),
