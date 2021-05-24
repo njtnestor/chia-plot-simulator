@@ -79,12 +79,21 @@ export default {
         checkboxDisabledCircleBackground: '#fff'
       }
     }],
+    '@nuxtjs/axios',
+    '@nuxtjs/proxy',
     '@nuxtjs/sitemap'
 
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+  },
+  axios: {
+    proxy: true
+  },
+  proxy: {
+    // '/api/shorturls/': { target: 'http://www.shorturls.co.uk/includes/reveal-parse.php', pathRewrite: { '^/api/': '' }, changeOrigin: true },
+    '/api/expandurl/': { target: 'http://expandurl.com', pathRewrite: { '^/api/expandurl/': '/api/v1/' }, changeOrigin: true }
   },
   i18n: {
     locales: [
@@ -158,5 +167,8 @@ export default {
         }
       }
     ]
+  },
+  env: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000'
   }
 }

@@ -1,9 +1,29 @@
 <template>
   <div style="min-height: inherit">
     <div class="newPlotContainer py-3">
-      <b-button v-if="!newPlot" variant="primary" @click="newPlot=!newPlot">
-        {{ $t('ganttPage.createPlot') }}
-      </b-button>
+      <div v-if="loadingShared">
+        <b-spinner class="loaderShare" type="grow" label="Spinning" />
+      </div>
+      <div v-else>
+        <div class="d-flex justify-content-between">
+          <b-button v-if="!newPlot" variant="primary" @click="newPlot=!newPlot">
+            {{ $t('ganttPage.createPlot') }}
+          </b-button>
+          <b-button v-if="plots.length && !shareUrl && !newPlot" variant="primary" class="float-right" @click="share">
+            <b-spinner v-show="sharingUrl" class="spinnerShare" small />
+            {{ $t('ganttPage.share') }}
+          </b-button>
+          <b-input-group v-if="shareUrl && !newPlot" style="width: 285px;">
+            <b-form-input ref="inputCopyShare" class="copyInput" :value="shareUrl" readonly />
+            <b-input-group-append>
+              <b-button variant="info" @click="copyShareUrl">
+                Copy!
+              </b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </div>
+      </div>
+
       <div v-if="newPlot">
         <b-form-file
           v-model="files"
@@ -45,7 +65,10 @@ export default {
     return {
       files: [],
       newPlot: false,
-      plots: []
+      plots: [],
+      shareUrl: undefined,
+      sharingUrl: false,
+      loadingShared: false
     }
   },
   head () {
@@ -60,7 +83,20 @@ export default {
       ]
     }
   },
+  created () {
+    if (this.$route.query.data) {
+      this.loadingShared = true
+    }
+  },
+  mounted () {
+    this.loadFromUrl()
+  },
   methods: {
+    copyShareUrl () {
+      this.$refs.inputCopyShare.select()
+      this.$refs.inputCopyShare.setSelectionRange(0, 99999)
+      document.execCommand('copy')
+    },
     readFile (file) {
       return new Promise((resolve, reject) => {
         const fr = new FileReader()
@@ -72,6 +108,59 @@ export default {
         }
         fr.readAsText(file)
       })
+    },
+    async share () {
+      this.sharingUrl = true
+      const objJsonStr = JSON.stringify(this.plots)
+      const objJsonB64 = Buffer.from(objJsonStr).toString('base64')
+
+      const blockParts = objJsonB64.match(new RegExp('.{1,' + 10000 + '}', 'g'))
+      try {
+        const apiCalls = blockParts.map((part) => {
+          return this.$axios.$get(`https://tinyurl.com/api-create.php?url=www.chiaplotsimulator.com/?data=${part}`)
+        })
+        const results = await Promise.all(apiCalls)
+        const shareParamUrl = results.map(result => result.split('.com/')[1]).join('-')
+
+        this.shareUrl = `${process.env.baseUrl}/?data=${shareParamUrl}`
+        this.sharingUrl = false
+      } catch (e) {
+        console.log('error creating url to share', e)
+      }
+    },
+    async loadFromUrl () {
+      if (this.$route.query.data) {
+        let resultsApi
+        const urlBlocks = this.$route.query.data.split('-')
+        try {
+          const apiCalls = urlBlocks.map((urlBlock) => {
+            return this.$axios.$post(`/api/expandurl/?url=https://tinyurl.com/${urlBlock}`)
+          })
+          resultsApi = await Promise.all(apiCalls)
+        } catch (e) {
+          console.log('loading from expand', JSON.stringify(e))
+        }
+        const b64 = resultsApi.map(result => result.split('?data=')[1]).join()
+        const objJsonStr = Buffer.from(b64, 'base64').toString('ascii')
+        const logsToProcess = JSON.parse(objJsonStr)
+        logsToProcess
+          .sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
+          .forEach((plot) => {
+            this.plots.push(plot)
+            this.addPlotTasks(plot)
+          })
+
+        /* Get earliest date and latest date */
+        const earliestOrderedList = this.plots.sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
+        const minDate = earliestOrderedList[0].phaseOne.startDate
+        this.$gantt().config.start_date = dayjs(minDate).startOf('hour').toDate()
+        const latestOrderedList = this.plots.sort((a, b) => new Date(b.copyPhase.endDate) - new Date(a.copyPhase.endDate))
+        const maxDate = latestOrderedList[0].copyPhase.endDate
+        this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
+        this.createDisks()
+        this.$gantt().render()
+        this.loadingShared = false
+      }
     },
     processPlotLogs (logs) {
       const logsToProcess = []
@@ -203,10 +292,6 @@ export default {
       })
     },
     send () {
-      const diskTemp1NameDic = {}
-      const diskFinalNameDic = {}
-      let nextDiskTemp1Color = 0
-      let nextFinalDiskColor = DiskColors.length - 1
       const readers = []
 
       // Store promises in array
@@ -220,29 +305,38 @@ export default {
         // with the text of every selected file
         // ["File1 Content", "File2 Content" ... "FileN Content"]
         this.processPlotLogs(values)
+        this.createDisks()
+        this.newPlot = false
+      })
+    },
 
-        for (const plot of this.plots) {
-          if (!(plot.diskTemp1Name in diskTemp1NameDic)) {
-            diskTemp1NameDic[plot.diskTemp1Name] = DiskColors[nextDiskTemp1Color] || 'no-colors'
-            nextDiskTemp1Color++
-          }
-          if (!(plot.diskFinal in diskFinalNameDic)) {
-            diskFinalNameDic[plot.diskFinal] = DiskColors[nextFinalDiskColor] || 'no-colors'
-            nextFinalDiskColor--
-          }
+    createDisks () {
+      const diskTemp1NameDic = {}
+      const diskFinalNameDic = {}
+      let nextDiskTemp1Color = 0
+      let nextFinalDiskColor = DiskColors.length - 1
+      for (const plot of this.plots) {
+        if (!(plot.diskTemp1Name in diskTemp1NameDic)) {
+          diskTemp1NameDic[plot.diskTemp1Name] = DiskColors[nextDiskTemp1Color] || 'no-colors'
+          nextDiskTemp1Color++
         }
+        if (!(plot.diskFinal in diskFinalNameDic)) {
+          diskFinalNameDic[plot.diskFinal] = DiskColors[nextFinalDiskColor] || 'no-colors'
+          nextFinalDiskColor--
+        }
+      }
 
-        this.$gantt().templates.grid_row_class = function (start, end, task) {
-          if (task.diskTemp1Name in diskTemp1NameDic && task.diskFinal in diskFinalNameDic) {
-            return `disk-color-${diskTemp1NameDic[task.diskTemp1Name]} disk-final-color-${diskFinalNameDic[task.diskFinal]}`
-          }
-          return ''
+      this.$gantt().templates.grid_row_class = function (start, end, task) {
+        if (task.diskTemp1Name in diskTemp1NameDic && task.diskFinal in diskFinalNameDic) {
+          return `disk-color-${diskTemp1NameDic[task.diskTemp1Name]} disk-final-color-${diskFinalNameDic[task.diskFinal]}`
         }
-        this.$gantt().templates.tooltip_text = (start, end, task) => {
-          const isParent = !task.parent
-          if (isParent) {
-            const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
-            return `<b>Plot ID:</b> ${task.id}
+        return ''
+      }
+      this.$gantt().templates.tooltip_text = (start, end, task) => {
+        const isParent = !task.parent
+        if (isParent) {
+          const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
+          return `<b>Plot ID:</b> ${task.id}
               <br/><b>${this.$t('ganttPage.fields.duration')}:</b> ${duration}
               <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
               <br/><b>${this.$t('ganttPage.fields.endDate')}:</b> ${end.toLocaleString()}
@@ -252,22 +346,27 @@ export default {
               <br/><b>${this.$t('ganttPage.fields.diskTemp2Name')}:</b> ${task.diskTemp2Name} 
               <br/><b>${this.$t('ganttPage.fields.diskFinal')}:</b> ${task.diskFinal} ${(task.diskFinal in diskFinalNameDic) ? `<div class="tooltip-disk-final-color-${diskFinalNameDic[task.diskFinal]}"></div>` : null}
               `
-          } else {
-            const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
-            return `<b>${this.$t('ganttPage.fields.phase')}:</b> ${task.text}
+        } else {
+          const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
+          return `<b>${this.$t('ganttPage.fields.phase')}:</b> ${task.text}
               <br/><b>${this.$t('ganttPage.fields.duration')}:</b> ${duration}
               <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
               <br/><b>${this.$t('ganttPage.fields.endDate')}</b> ${end.toLocaleString()}`
-          }
         }
-        this.newPlot = false
-      })
+      }
     }
+
   }
 }
 </script>
 
 <style>
+  .loaderShare{
+    position: absolute;
+    z-index: 999999;
+    top: 50%;
+    left: 50%;
+  }
   .newPlotContainer{
     text-align: left;
     padding: 0 16px;
@@ -277,4 +376,16 @@ export default {
     position: relative;
     height: 100%;
   }
+
+  .copyInput{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .spinnerShare{
+    margin-bottom: 1px;
+    margin-right: 3px;
+  }
+
 </style>

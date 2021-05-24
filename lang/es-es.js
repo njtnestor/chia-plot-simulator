@@ -14,6 +14,7 @@ export default {
       description: 'Este simulador de ploteo te ayudará a plotear más rápido, a encontrar errores visualmente, a analizar si salió como habías planeado y a ganar más chias (XCH)'
     },
     createPlot: 'Nuevo plot',
+    share: 'Compartir',
     plotFileSelect: {
       placeholder: 'Selecciona/Arrastra uno o varios archivos de log aquí..'
     },
