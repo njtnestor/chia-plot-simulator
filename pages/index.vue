@@ -9,10 +9,11 @@
           <b-button v-if="!newPlot" variant="primary" @click="newPlot=!newPlot">
             {{ $t('ganttPage.createPlot') }}
           </b-button>
-          <b-button v-if="plots.length && !shareUrl" variant="primary" class="float-right" @click="share">
+          <b-button v-if="plots.length && !shareUrl && !newPlot" variant="primary" class="float-right" @click="share">
+            <b-spinner v-show="sharingUrl" class="spinnerShare" small />
             {{ $t('ganttPage.share') }}
           </b-button>
-          <b-input-group v-if="shareUrl" style="width: 285px;">
+          <b-input-group v-if="shareUrl && !newPlot" style="width: 285px;">
             <b-form-input ref="inputCopyShare" class="copyInput" :value="shareUrl" readonly />
             <b-input-group-append>
               <b-button variant="info" @click="copyShareUrl">
@@ -66,6 +67,7 @@ export default {
       newPlot: false,
       plots: [],
       shareUrl: undefined,
+      sharingUrl: false,
       loadingShared: false
     }
   },
@@ -108,6 +110,7 @@ export default {
       })
     },
     async share () {
+      this.sharingUrl = true
       const objJsonStr = JSON.stringify(this.plots)
       const objJsonB64 = Buffer.from(objJsonStr).toString('base64')
 
@@ -120,6 +123,7 @@ export default {
         const shareParamUrl = results.map(result => result.split('.com/')[1]).join('-')
 
         this.shareUrl = `${process.env.baseUrl}/?data=${shareParamUrl}`
+        this.sharingUrl = false
       } catch (e) {
         console.log('error creating url to share', e)
       }
@@ -378,4 +382,10 @@ export default {
     overflow: hidden;
     white-space: nowrap;
   }
+
+  .spinnerShare{
+    margin-bottom: 1px;
+    margin-right: 3px;
+  }
+
 </style>
