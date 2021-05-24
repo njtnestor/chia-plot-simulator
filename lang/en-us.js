@@ -14,6 +14,7 @@ export default {
       description: 'This plotting simulator will help you to plot faster, find errors visually, analyze if it went as you had planned and earn more chias (XCH).'
     },
     createPlot: 'New plot',
+    share: 'Share',
     plotFileSelect: {
       placeholder: 'Choose/Drop one or more plot log files here...'
     },

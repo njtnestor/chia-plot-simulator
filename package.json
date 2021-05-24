@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.4",
+    "@nuxtjs/proxy": "^2.1.0",
     "@nuxtjs/sitemap": "^2.4.0",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
