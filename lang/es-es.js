@@ -32,6 +32,8 @@ export default {
       buckets: 'Buckets',
       phase: 'Fase',
       duration: 'Duración',
+      durationCopy: 'Duración (Gráfico)',
+      durationTotal: 'Duración (Total)',
       startDate: 'Fecha de inicio',
       endDate: 'Fecha de finalización',
       diskTemp1Name: 'Disco Temp 1',

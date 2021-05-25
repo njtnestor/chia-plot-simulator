@@ -197,6 +197,7 @@ export default {
             diskTemp2Name: log.split('Starting plotting progress into temporary dirs: ')[1].split('\n')[0].split(' ')[2],
             diskFinal: log.split('Copied final file from ')[1].split('\n')[0].split(' ')[2].split('plot-')[0],
             totalTime: log.split('Total time = ')[1].split('\n')[0].split(' ')[0],
+            copyTime: log.split('Copy time = ')[1].split('\n')[0].split(' ')[0],
             plotSize: log.split('Plot size is: ')[1].split('\n')[0],
             ram: log.split('Buffer size is: ')[1].split('\n')[0],
             buckets: log.split('Buffer size is: ')[1].split('\n')[1].split(' ')[1],
@@ -228,6 +229,7 @@ export default {
         start_date: new Date(plot.phaseOne.startDate),
         end_date: new Date(plot.copyPhase.endDate),
         totalTime: plot.totalTime,
+        copyTime: plot.copyTime,
         progress: 1,
         size: `k${plot.plotSize}`,
         threads: plot.threads,
@@ -334,10 +336,17 @@ export default {
       }
       this.$gantt().templates.tooltip_text = (start, end, task) => {
         const isParent = !task.parent
+        const totalPlotTime = task.totalTime ? Number(task.totalTime) * 1000 : 0;
+        const duration = totalPlotTime ? new Date(totalPlotTime).toISOString().substr(11, 8) : ''
         if (isParent) {
-          const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
+          const totalCopyTime = task.copyTime ? Number(task.copyTime) * 1000 : 0;
+          const totalTime = totalPlotTime + totalCopyTime;
+          const durationCopy = totalCopyTime ? new Date(totalCopyTime).toISOString().substr(11, 8) : ''
+          const durationTotal = totalTime ? new Date(totalTime).toISOString().substr(11, 8) : ''
           return `<b>Plot ID:</b> ${task.id}
               <br/><b>${this.$t('ganttPage.fields.duration')}:</b> ${duration}
+              <br/><b>${this.$t('ganttPage.fields.durationCopy')}:</b> ${durationCopy}
+              <br/><b>${this.$t('ganttPage.fields.durationTotal')}:</b> ${durationTotal}
               <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
               <br/><b>${this.$t('ganttPage.fields.endDate')}:</b> ${end.toLocaleString()}
               <br/><b>${this.$t('ganttPage.fields.size')}:</b> ${task.size}
@@ -347,7 +356,6 @@ export default {
               <br/><b>${this.$t('ganttPage.fields.diskFinal')}:</b> ${task.diskFinal} ${(task.diskFinal in diskFinalNameDic) ? `<div class="tooltip-disk-final-color-${diskFinalNameDic[task.diskFinal]}"></div>` : null}
               `
         } else {
-          const duration = task.totalTime ? new Date(Number(task.totalTime) * 1000).toISOString().substr(11, 8) : ''
           return `<b>${this.$t('ganttPage.fields.phase')}:</b> ${task.text}
               <br/><b>${this.$t('ganttPage.fields.duration')}:</b> ${duration}
               <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
