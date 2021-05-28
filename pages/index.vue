@@ -338,7 +338,7 @@ export default {
         const isParent = !task.parent
         const totalPlotTime = task.totalTime ? Number(task.totalTime) * 1000 : 0
         const totalCopyTime = task.copyTime ? Number(task.copyTime) * 1000 : 0
-        const totalTime = totalPlotTime + totalCopyTime;
+        const totalTime = totalPlotTime + totalCopyTime
         const duration = totalTime ? new Date(totalTime).toISOString().substr(11, 8) : ''
         const durationCopy = totalCopyTime ? new Date(totalCopyTime).toISOString().substr(11, 8) : ''
         if (isParent) {

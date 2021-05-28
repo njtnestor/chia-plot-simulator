@@ -87,17 +87,14 @@ export default {
         return this.$gantt().$root.querySelector('.gantt_task')
       }
     }
+
     this.$gantt().config.drag_resize = false
-
-    // this.$gantt().config.order_branch = true
-    // this.$gantt().config.drag_progress = false
     this.$gantt().config.drag_move = false
-
+    this.$gantt().config.order_branch = true
     this.$gantt().config.sort = true
     this.$gantt().ext.zoom.init(zoomConfig)
     this.$gantt().ext.zoom.setLevel('hour')
     this.$gantt().init(this.$refs.gantt)
-    // this.$gantt().parse(this.$props.tasks)
   }
 
 }
