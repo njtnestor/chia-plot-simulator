@@ -42,7 +42,10 @@ export default {
         width: 80,
         sort: false,
         template (obj) {
-          return (obj.totalTime) ? new Date(Number(obj.totalTime) * 1000).toISOString().substr(11, 8) : ''
+          const totalPlotTime = obj.totalTime ? Number(obj.totalTime) * 1000 : 0
+          const totalCopyTime = obj.copyTime ? Number(obj.copyTime) * 1000 : 0
+          const totalTime = totalPlotTime + totalCopyTime
+          return (obj.totalTime) ? new Date(totalTime).toISOString().substr(11, 8) : ''
         }
       },
       { name: 'threads', label: this.$t('ganttPage.fields.threads'), align: 'center', width: 50, sort: false },

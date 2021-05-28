@@ -336,14 +336,15 @@ export default {
       }
       this.$gantt().templates.tooltip_text = (start, end, task) => {
         const isParent = !task.parent
-        const totalPlotTime = task.totalTime ? Number(task.totalTime) * 1000 : 0;
-        const totalCopyTime = task.copyTime ? Number(task.copyTime) * 1000 : 0;
+        const totalPlotTime = task.totalTime ? Number(task.totalTime) * 1000 : 0
+        const totalCopyTime = task.copyTime ? Number(task.copyTime) * 1000 : 0
         const totalTime = totalPlotTime + totalCopyTime;
         const duration = totalTime ? new Date(totalTime).toISOString().substr(11, 8) : ''
+        const durationCopy = totalCopyTime ? new Date(totalCopyTime).toISOString().substr(11, 8) : ''
         if (isParent) {
           return `<b>Plot ID:</b> ${task.id}
-              <br/><b>${this.$t('ganttPage.fields.duration')}:</b> ${duration}
               <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
+              <br/><b>${this.$t('ganttPage.fields.durationCopy')}:</b> ${durationCopy}
               <br/><b>${this.$t('ganttPage.fields.endDate')}:</b> ${end.toLocaleString()}
               <br/><b>${this.$t('ganttPage.fields.size')}:</b> ${task.size}
               <br/><b>${this.$t('ganttPage.fields.buckets')}:</b> ${task.buckets}

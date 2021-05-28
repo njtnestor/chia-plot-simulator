@@ -32,6 +32,7 @@ export default {
       buckets: 'Buckets',
       phase: 'Phase',
       duration: 'Duration',
+      durationCopy: 'Duration (Copy)',
       startDate: 'Start date',
       endDate: 'End date',
       diskTemp1Name: 'Disk Temp 1',
