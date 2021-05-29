@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+
+## 1.2.0 Chia Plot Simulator 2021-05-29
+
+### Fixed
+
+- Total times greater than 24h are now being displayed properly
+- Left table total time column is now displaying phase1-4 + copy phase
+- Sorting plots manually had been disabled by mistake
+
+### Added
+
+- New modal with instructions and keyboard shortcuts
+- Incomplete plot log files are now being displayed if one phase is completed
+
 ## 1.1.1 Chia Plot Simulator 2021-05-24
 
 ### Added
