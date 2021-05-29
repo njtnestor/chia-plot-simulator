@@ -4,6 +4,11 @@
 
 <script>
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import duration from 'dayjs/plugin/duration'
+
+dayjs.extend(duration)
+dayjs.extend(utc)
 
 export default {
   name: 'Gantt',
@@ -41,11 +46,14 @@ export default {
         align: 'center',
         width: 80,
         sort: false,
-        template (obj) {
-          const totalPlotTime = obj.totalTime ? Number(obj.totalTime) * 1000 : 0
-          const totalCopyTime = obj.copyTime ? Number(obj.copyTime) * 1000 : 0
-          const totalTime = totalPlotTime + totalCopyTime
-          return (obj.totalTime) ? new Date(totalTime).toISOString().substr(11, 8) : ''
+        template ({ totalTime }) {
+          if (!totalTime) return ''
+          const hours = Math.trunc(totalTime / 60 / 60)
+          const minutes = Math.trunc(totalTime / 60 % 60)
+          const seconds = Math.trunc(totalTime % 60)
+          return dayjs
+            .duration({ hours, minutes, seconds })
+            .format('HH:mm:ss')
         }
       },
       { name: 'threads', label: this.$t('ganttPage.fields.threads'), align: 'center', width: 50, sort: false },

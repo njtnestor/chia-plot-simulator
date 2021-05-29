@@ -59,7 +59,9 @@
 
 <script>
 import dayjs from 'dayjs'
-import { DiskColors } from '@/utils/constants/colors'
+import PlotFileReader from '@/services/PlotFileReader'
+import { DiskColors, PhaseColors } from '@/utils/constants/colors'
+
 export default {
   data () {
     return {
@@ -144,18 +146,18 @@ export default {
         const objJsonStr = Buffer.from(b64, 'base64').toString('ascii')
         const logsToProcess = JSON.parse(objJsonStr)
         logsToProcess
-          .sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
+          .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
           .forEach((plot) => {
             this.plots.push(plot)
             this.addPlotTasks(plot)
           })
 
         /* Get earliest date and latest date */
-        const earliestOrderedList = this.plots.sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
-        const minDate = earliestOrderedList[0].phaseOne.startDate
+        const earliestOrderedList = this.plots.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+        const minDate = earliestOrderedList[0].startDate
         this.$gantt().config.start_date = dayjs(minDate).startOf('hour').toDate()
-        const latestOrderedList = this.plots.sort((a, b) => new Date(b.copyPhase.endDate) - new Date(a.copyPhase.endDate))
-        const maxDate = latestOrderedList[0].copyPhase.endDate
+        const latestOrderedList = this.plots.sort((a, b) => new Date(b.endDate) - new Date(a.endDate))
+        const maxDate = latestOrderedList[0].endDate
         this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
         this.createDisks()
         this.$gantt().render()
@@ -163,134 +165,53 @@ export default {
       }
     },
     processPlotLogs (logs) {
-      const logsToProcess = []
-      logs.forEach((log) => {
-        const isFinished = !!log.split('Copy time = ')[1]
-        if (isFinished) {
-          const plot = {
-            phaseOne: {
-              startDate: log.split('Starting phase 1/4: Forward Propagation into tmp files... ')[1].split('\n')[0],
-              endDate: log.split('Time for phase 1 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-              duration: log.split('Time for phase 1 = ')[1].split('\n')[0].split(' ')[0]
-            },
-            phaseTwo: {
-              startDate: log.split('Starting phase 2/4: ')[1].split('\n')[0].split('... ')[1],
-              endDate: log.split('Time for phase 2 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-              duration: log.split('Time for phase 2 = ')[1].split('\n')[0].split(' ')[0]
-            },
-            phaseThree: {
-              startDate: log.split('Starting phase 3/4: ')[1].split('\n')[0].split('... ')[1],
-              endDate: log.split('Time for phase 3 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-              duration: log.split('Time for phase 3 = ')[1].split('\n')[0].split(' ')[0]
-            },
-            phaseFour: {
-              startDate: log.split('Starting phase 4/4: ')[1].split('\n')[0].split('... ')[1],
-              endDate: log.split('Time for phase 4 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-              duration: log.split('Time for phase 4 = ')[1].split('\n')[0].split(' ')[0]
-            },
-            copyPhase: {
-              startDate: log.split('Time for phase 4 = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-              endDate: log.split('Copy time = ')[1].split('\n')[0].split(' ').slice(4).join(' '),
-              duration: log.split('Copy time = ')[1].split('\n')[0].split(' ')[0]
-            },
-            diskTemp1Name: log.split('Starting plotting progress into temporary dirs: ')[1].split('\n')[0].split(' ')[0],
-            diskTemp2Name: log.split('Starting plotting progress into temporary dirs: ')[1].split('\n')[0].split(' ')[2],
-            diskFinal: log.split('Copied final file from ')[1].split('\n')[0].split(' ')[2].split('plot-')[0],
-            totalTime: log.split('Total time = ')[1].split('\n')[0].split(' ')[0],
-            copyTime: log.split('Copy time = ')[1].split('\n')[0].split(' ')[0],
-            plotSize: log.split('Plot size is: ')[1].split('\n')[0],
-            ram: log.split('Buffer size is: ')[1].split('\n')[0],
-            buckets: log.split('Buffer size is: ')[1].split('\n')[1].split(' ')[1],
-            threads: log.split('Buffer size is: ')[1].split('\n')[2].split(' ')[1],
-            id: log.split('ID: ')[1].split('\n')[0]
-          }
-          logsToProcess.push(plot)
-        }
-      })
-
-      logsToProcess
-        .sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
+      logs.map(log => PlotFileReader.processLogFile(log).toJSON())
+        .filter(plot => !!plot)
+        .sort((a, b) => new Date(a.parent.startDate) - new Date(b.parent.startDate))
         .forEach((plot) => {
           this.plots.push(plot)
           this.addPlotTasks(plot)
         })
 
       /* Get earliest date and latest date */
-      const earliestOrderedList = this.plots.sort((a, b) => new Date(a.phaseOne.startDate) - new Date(b.phaseOne.startDate))
-      const minDate = earliestOrderedList[0].phaseOne.startDate
+      const earliestOrderedList = this.plots.sort((a, b) => new Date(a.parent.startDate) - new Date(b.parent.startDate))
+      const minDate = earliestOrderedList[0].parent.startDate
       this.$gantt().config.start_date = dayjs(minDate).startOf('hour').toDate()
-      const latestOrderedList = this.plots.sort((a, b) => new Date(b.copyPhase.endDate) - new Date(a.copyPhase.endDate))
-      const maxDate = latestOrderedList[0].copyPhase.endDate
+      const latestOrderedList = this.plots.sort((a, b) => new Date(b.parent.endDate) - new Date(a.parent.endDate))
+      const maxDate = latestOrderedList[0].parent.endDate
       this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
     },
     addPlotTasks (plot) {
       const taskId = this.$gantt().addTask({
-        text: plot.id,
-        start_date: new Date(plot.phaseOne.startDate),
-        end_date: new Date(plot.copyPhase.endDate),
-        totalTime: plot.totalTime,
-        copyTime: plot.copyTime,
+        text: plot.parent.id,
+        start_date: new Date(plot.parent.startDate),
+        end_date: new Date(plot.parent.endDate),
+        totalTime: plot.parent.totalTime,
+        totalTimeWithoutCopy: plot.parent.totalTimeWithoutCopy,
+        copyTime: plot.parent.copyTime,
         progress: 1,
-        size: `k${plot.plotSize}`,
-        threads: plot.threads,
-        buckets: plot.buckets,
-        ram: plot.ram,
-        diskTemp1Name: plot.diskTemp1Name,
-        diskTemp2Name: plot.diskTemp2Name,
-        diskFinal: plot.diskFinal,
+        size: `k${plot.parent.size}`,
+        threads: plot.parent.threads,
+        buckets: plot.parent.buckets,
+        ram: plot.parent.ram,
+        diskTemp1Name: plot.parent.diskTemp1Name,
+        diskTemp2Name: plot.parent.diskTemp2Name,
+        diskFinal: plot.parent.diskFinal,
         open: false,
         render: 'split'
       })
-      this.$gantt().addTask({
-        text: this.$t('ganttPage.plot.phase1'),
-        start_date: new Date(plot.phaseOne.startDate),
-        totalTime: plot.phaseOne.duration,
-        end_date: new Date(plot.phaseOne.endDate),
-        progress: 1,
-        open: false,
-        color: '#08534a',
-        parent: taskId
-      })
-      this.$gantt().addTask({
-        text: this.$t('ganttPage.plot.phase2'),
-        start_date: new Date(plot.phaseTwo.startDate),
-        totalTime: plot.phaseTwo.duration,
-        end_date: new Date(plot.phaseTwo.endDate),
-        progress: 1,
-        color: '#ff9f01',
-        parent: taskId,
-        open: false
-      })
-      this.$gantt().addTask({
 
-        text: this.$t('ganttPage.plot.phase3'),
-        start_date: new Date(plot.phaseThree.startDate),
-        totalTime: plot.phaseThree.duration,
-        end_date: new Date(plot.phaseThree.endDate),
-        progress: 1,
-        color: '#3e612c',
-        parent: taskId,
-        open: false
-      })
-      this.$gantt().addTask({
-        text: this.$t('ganttPage.plot.phase4'),
-        start_date: new Date(plot.phaseFour.startDate),
-        totalTime: plot.phaseFour.duration,
-        end_date: new Date(plot.phaseFour.endDate),
-        progress: 1,
-        color: '#3f3d56',
-        parent: taskId,
-        open: false
-      })
-      this.$gantt().addTask({
-        text: this.$t('ganttPage.plot.phaseCopy'),
-        start_date: new Date(plot.copyPhase.startDate),
-        totalTime: plot.copyPhase.duration,
-        end_date: new Date(plot.copyPhase.endDate),
-        progress: 1,
-        color: '#3563b1',
-        parent: taskId,
-        open: false
+      plot.phases.forEach((phase, index) => {
+        this.$gantt().addTask({
+          text: this.$t(`ganttPage.plot.phase${index + 1}`),
+          start_date: new Date(phase.startDate),
+          totalTime: phase.duration,
+          end_date: new Date(phase.endDate),
+          progress: 1,
+          open: false,
+          color: PhaseColors[index],
+          parent: taskId
+        })
       })
     },
     send () {
@@ -318,19 +239,22 @@ export default {
       let nextDiskTemp1Color = 0
       let nextFinalDiskColor = DiskColors.length - 1
       for (const plot of this.plots) {
-        if (!(plot.diskTemp1Name in diskTemp1NameDic)) {
-          diskTemp1NameDic[plot.diskTemp1Name] = DiskColors[nextDiskTemp1Color] || 'no-colors'
+        if (!(plot.parent.diskTemp1Name in diskTemp1NameDic)) {
+          diskTemp1NameDic[plot.parent.diskTemp1Name] = DiskColors[nextDiskTemp1Color] || 'no-colors'
           nextDiskTemp1Color++
         }
-        if (!(plot.diskFinal in diskFinalNameDic)) {
-          diskFinalNameDic[plot.diskFinal] = DiskColors[nextFinalDiskColor] || 'no-colors'
+        if (plot.parent.diskFinal && !(plot.parent.diskFinal in diskFinalNameDic)) {
+          diskFinalNameDic[plot.parent.diskFinal] = DiskColors[nextFinalDiskColor] || 'no-colors'
           nextFinalDiskColor--
         }
       }
 
       this.$gantt().templates.grid_row_class = function (start, end, task) {
-        if (task.diskTemp1Name in diskTemp1NameDic && task.diskFinal in diskFinalNameDic) {
-          return `disk-color-${diskTemp1NameDic[task.diskTemp1Name]} disk-final-color-${diskFinalNameDic[task.diskFinal]}`
+        if (task.diskTemp1Name in diskTemp1NameDic || task.diskFinal in diskFinalNameDic) {
+          const tempDiskClass = task.diskTemp1Name && diskTemp1NameDic[task.diskTemp1Name] ? `disk-color-${diskTemp1NameDic[task.diskTemp1Name]}` : ''
+          const finalDiskClass = task.diskFinal && diskFinalNameDic[task.diskFinal] ? `disk-final-color-${diskFinalNameDic[task.diskFinal]}` : ''
+
+          return `${tempDiskClass} ${finalDiskClass}`
         }
         return ''
       }
@@ -342,15 +266,17 @@ export default {
         const duration = totalTime ? new Date(totalTime).toISOString().substr(11, 8) : ''
         const durationCopy = totalCopyTime ? new Date(totalCopyTime).toISOString().substr(11, 8) : ''
         if (isParent) {
+          const durationCopyInfo = `<br/><b>${this.$t('ganttPage.fields.durationCopy')}:</b> ${durationCopy}`
+          const finalDiskInfo = `<br/><b>${this.$t('ganttPage.fields.diskFinal')}:</b> ${task.diskFinal} ${(task.diskFinal in diskFinalNameDic) ? `<div class="tooltip-disk-final-color-${diskFinalNameDic[task.diskFinal]}"></div>` : null}`
           return `<b>Plot ID:</b> ${task.id}
               <br/><b>${this.$t('ganttPage.fields.startDate')}:</b> ${start.toLocaleString()}
-              <br/><b>${this.$t('ganttPage.fields.durationCopy')}:</b> ${durationCopy}
+              ${durationCopy ? durationCopyInfo : ''}
               <br/><b>${this.$t('ganttPage.fields.endDate')}:</b> ${end.toLocaleString()}
               <br/><b>${this.$t('ganttPage.fields.size')}:</b> ${task.size}
               <br/><b>${this.$t('ganttPage.fields.buckets')}:</b> ${task.buckets}
               <br/><b>${this.$t('ganttPage.fields.diskTemp1Name')}:</b> ${task.diskTemp1Name} ${(task.diskTemp1Name in diskTemp1NameDic) ? `<div class="tooltip-disk-color-${diskTemp1NameDic[task.diskTemp1Name]}"></div>` : null} 
               <br/><b>${this.$t('ganttPage.fields.diskTemp2Name')}:</b> ${task.diskTemp2Name} 
-              <br/><b>${this.$t('ganttPage.fields.diskFinal')}:</b> ${task.diskFinal} ${(task.diskFinal in diskFinalNameDic) ? `<div class="tooltip-disk-final-color-${diskFinalNameDic[task.diskFinal]}"></div>` : null}
+              ${task.diskFinal ? finalDiskInfo : ''}
               `
         } else {
           return `<b>${this.$t('ganttPage.fields.phase')}:</b> ${task.text}

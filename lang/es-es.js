@@ -23,7 +23,7 @@ export default {
       phase2: 'FASE 2',
       phase3: 'FASE 3',
       phase4: 'FASE 4',
-      phaseCopy: 'COPY'
+      phase5: 'COPY'
     },
     fields: {
       threads: 'Hilos',

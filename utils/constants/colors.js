@@ -44,4 +44,6 @@ const DiskColors = [
   'a9a9a9'
 ]
 
-export { DiskColors }
+const PhaseColors = ['#08534a', '#ff9f01', '#3e612c', '#3f3d56', '#3563b1']
+
+export { DiskColors, PhaseColors }
