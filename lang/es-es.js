@@ -38,6 +38,28 @@ export default {
       diskTemp1Name: 'Disco Temp 1',
       diskTemp2Name: 'Disco Temp 2',
       diskFinal: 'Disco destino'
+    },
+    infoModal: {
+      title: 'Instrucciones/Controles',
+      instructions: {
+        title: 'Instrucciones',
+        step1: 'Selecciona tantos archivos de logs como quieras visualizar.',
+        step2: 'Visualiza tus plots y su información en una gráfica en función del tiempo.'
+      },
+      controls: {
+        title: 'Controles',
+        zoomTitle: 'Zoom',
+        zoomDescription: 'Ctrl + Scroll',
+        horizontalScrollTitle: 'Horizontal scroll',
+        horizontalScrollDescription: 'Shift + Scroll',
+        reorderPlotsTitle: 'Reordena plots manualmente',
+        reorderPlotsDescription: 'Arrastra y suelta en la seccion de información del plot.',
+        orderByTitle: 'Ordena por alguna columna',
+        orderByDescription: 'Haz click en la columna de información por la que quieres ordenar.',
+        extraPlotInfoTitle: 'Información extra del plot',
+        extraPlotInfoDescription: 'Situa el cursor del ratón encima de un plot o de cualquiera de sus fases.',
+        example: 'Ejemplo'
+      }
     }
   },
   colaboratePage: {
