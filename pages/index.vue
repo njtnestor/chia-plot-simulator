@@ -9,6 +9,9 @@
           <b-button v-if="!newPlot" variant="primary" @click="newPlot=!newPlot">
             {{ $t('ganttPage.createPlot') }}
           </b-button>
+          <b-button v-if="!newPlot" variant="outline-primary" @click="show()">
+            {{ $t('ganttPage.infoModal.title') }}
+          </b-button>
           <b-button v-if="plots.length && !shareUrl && !newPlot" variant="primary" class="float-right" @click="share">
             <b-spinner v-show="sharingUrl" class="spinnerShare" small />
             {{ $t('ganttPage.share') }}
@@ -54,13 +57,24 @@
       </div>
     </div>
     <Gantt class="left-container" />
+    <CustomModal modal-name="shareModal">
+      <template slot="ModalContent">
+        <ControlsGanttModal />
+      </template>
+    </CustomModal>
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs'
+import CustomModal from '@/components/modal/CustomModal'
+import ControlsGanttModal from '@/components/modal/ControlsGanttModal'
 import { DiskColors } from '@/utils/constants/colors'
 export default {
+  components: {
+    CustomModal,
+    ControlsGanttModal
+  },
   data () {
     return {
       files: [],
@@ -92,6 +106,12 @@ export default {
     this.loadFromUrl()
   },
   methods: {
+    show () {
+      this.$modal.show('shareModal')
+    },
+    hide () {
+      this.$modal.hide('shareModal')
+    },
     copyShareUrl () {
       this.$refs.inputCopyShare.select()
       this.$refs.inputCopyShare.setSelectionRange(0, 99999)

@@ -38,6 +38,28 @@ export default {
       diskTemp1Name: 'Disk Temp 1',
       diskTemp2Name: 'Disk Temp 2',
       diskFinal: 'Disk Destination'
+    },
+    infoModal: {
+      title: 'Instructions/Controls',
+      instructions: {
+        title: 'Instructions',
+        step1: 'Select as many log files as you want.',
+        step2: 'Visualize your times and plot info in a time graph.'
+      },
+      controls: {
+        title: 'Controls',
+        zoomTitle: 'Zoom',
+        zoomDescription: 'Ctrl + Scroll',
+        horizontalScrollTitle: 'Horizontal scroll:',
+        horizontalScrollDescription: 'Shift + Scroll',
+        reorderPlotsTitle: 'Reorder plots manually',
+        reorderPlotsDescription: 'Drag and drop in plot info section.',
+        orderByTitle: 'Order by',
+        orderByDescription: 'Click in some info column.',
+        extraPlotInfoTitle: 'Extra plot info',
+        extraPlotInfoDescription: 'Hover on plot info or phase info.',
+        example: 'Example'
+      }
     }
   },
   colaboratePage: {
