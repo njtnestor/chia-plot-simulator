@@ -166,7 +166,7 @@ export default {
         const objJsonStr = Buffer.from(b64, 'base64').toString('ascii')
         const logsToProcess = JSON.parse(objJsonStr)
         logsToProcess
-          .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+          .sort((a, b) => new Date(a.parent.startDate) - new Date(b.parent.startDate))
           .forEach((plot) => {
             this.plots.push(plot)
             this.addPlotTasks(plot)
