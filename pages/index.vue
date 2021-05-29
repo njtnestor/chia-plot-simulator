@@ -172,17 +172,20 @@ export default {
             this.addPlotTasks(plot)
           })
 
-        /* Get earliest date and latest date */
-        const earliestOrderedList = this.plots.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-        const minDate = earliestOrderedList[0].startDate
-        this.$gantt().config.start_date = dayjs(minDate).startOf('hour').toDate()
-        const latestOrderedList = this.plots.sort((a, b) => new Date(b.endDate) - new Date(a.endDate))
-        const maxDate = latestOrderedList[0].endDate
-        this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
+        this.adjustGanntRange()
         this.createDisks()
         this.$gantt().render()
         this.loadingShared = false
       }
+    },
+    adjustGanntRange () {
+      /* Get earliest date and latest date */
+      const earliestOrderedList = this.plots.sort((a, b) => new Date(a.parent.startDate) - new Date(b.parent.startDate))
+      const minDate = earliestOrderedList[0].parent.startDate
+      this.$gantt().config.start_date = dayjs(minDate).startOf('hour').toDate()
+      const latestOrderedList = this.plots.sort((a, b) => new Date(b.parent.endDate) - new Date(a.parent.endDate))
+      const maxDate = latestOrderedList[0].parent.endDate
+      this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
     },
     processPlotLogs (logs) {
       logs.map(log => PlotFileReader.processLogFile(log).toJSON())
@@ -192,14 +195,6 @@ export default {
           this.plots.push(plot)
           this.addPlotTasks(plot)
         })
-
-      /* Get earliest date and latest date */
-      const earliestOrderedList = this.plots.sort((a, b) => new Date(a.parent.startDate) - new Date(b.parent.startDate))
-      const minDate = earliestOrderedList[0].parent.startDate
-      this.$gantt().config.start_date = dayjs(minDate).startOf('hour').toDate()
-      const latestOrderedList = this.plots.sort((a, b) => new Date(b.parent.endDate) - new Date(a.parent.endDate))
-      const maxDate = latestOrderedList[0].parent.endDate
-      this.$gantt().config.end_date = dayjs(maxDate).endOf('hour').toDate()
     },
     addPlotTasks (plot) {
       const taskId = this.$gantt().addTask({
@@ -248,6 +243,7 @@ export default {
         // with the text of every selected file
         // ["File1 Content", "File2 Content" ... "FileN Content"]
         this.processPlotLogs(values)
+        this.adjustGanntRange()
         this.createDisks()
         this.newPlot = false
       })
