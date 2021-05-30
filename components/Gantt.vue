@@ -95,7 +95,7 @@ export default {
         return this.$gantt().$root.querySelector('.gantt_task')
       }
     }
-
+    this.$gantt().config.readonly = true
     this.$gantt().config.drag_resize = false
     this.$gantt().config.drag_move = false
     this.$gantt().config.order_branch = true
