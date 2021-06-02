@@ -97,16 +97,22 @@ export default {
   i18n: {
     locales: [
       {
+        code: 'en',
+        iso: 'en-US',
+        name: 'English',
+        file: 'en-us.js'
+      },
+      {
         code: 'es',
         iso: 'es-ES',
         name: 'Español',
         file: 'es-es.js'
       },
       {
-        code: 'en',
-        iso: 'en-US',
-        name: 'English',
-        file: 'en-us.js'
+        code: 'ru',
+        iso: 'ru-Ru',
+        name: 'Russian',
+        file: 'ru-ru.js'
       }
     ],
     detectBrowserLanguage: false,
