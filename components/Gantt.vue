@@ -103,6 +103,9 @@ export default {
     this.$gantt().ext.zoom.init(zoomConfig)
     this.$gantt().ext.zoom.setLevel('hour')
     this.$gantt().init(this.$refs.gantt)
+  },
+  beforeDestroy () {
+    this.$gantt().clearAll()
   }
 
 }

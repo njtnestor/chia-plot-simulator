@@ -73,6 +73,7 @@ import PlotFileReader from '@/services/PlotFileReader'
 import { DiskColors, PhaseColors } from '@/utils/constants/colors'
 
 export default {
+  name: 'Home',
   components: {
     CustomModal,
     ControlsGanttModal
