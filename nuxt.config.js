@@ -78,6 +78,19 @@ export default {
         checkboxDisabledCircleBackground: '#fff'
       }
     }],
+    ['nuxt-fontawesome', {
+      component: 'fa',
+      imports: [
+        {
+          set: '@fortawesome/free-solid-svg-icons',
+          icons: ['faShareAlt', 'faClipboard', 'faSeedling']
+        },
+        {
+          set: '@fortawesome/free-brands-svg-icons',
+          icons: ['faInstagram']
+        }
+      ]
+    }],
     '@nuxtjs/axios',
     '@nuxtjs/proxy',
     '@nuxtjs/sitemap'
