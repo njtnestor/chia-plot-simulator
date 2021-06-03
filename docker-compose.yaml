@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+    nuxt:
+        build: .
+        container_name: vuevixens-website
+        restart: always
+        ports:
+            - "3000:3000"
+  
+    nginx:
+        image: nginx:1.13
+        container_name: vuevixens-nginx
+        ports:
+            - "80:80"
+        volumes:
+            - ./nginx:/etc/nginx/conf.d
+        depends_on:
+            - nuxt
