@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 1.2.1 Chia Plot Simulator 2021-06-02
+
+### Fixed
+- Avoid edit plots on double click them. They are now read-only.
+- Fixed a bug where plots can be duplicated on navigate back.
+
+### Added
+- Added Russian language support. Thank you to the following community members for their translation contributions: @eaglemoor.
+- Added icons library.
 
 ## 1.2.0 Chia Plot Simulator 2021-05-29
 

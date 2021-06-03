@@ -7,14 +7,14 @@
       <div v-else>
         <div class="d-flex justify-content-between">
           <b-button v-if="!newPlot" variant="primary" @click="newPlot=!newPlot">
-            {{ $t('ganttPage.createPlot') }}
+            <fa class="mr-1" :icon="['fas', 'seedling']" /> {{ $t('ganttPage.createPlot') }}
           </b-button>
           <b-button v-if="!newPlot" variant="outline-primary" @click="show()">
             {{ $t('ganttPage.infoModal.title') }}
           </b-button>
           <b-button v-if="plots.length && !shareUrl && !newPlot" variant="primary" class="float-right" @click="share">
             <b-spinner v-show="sharingUrl" class="spinnerShare" small />
-            {{ $t('ganttPage.share') }}
+            <fa class="mr-2" :icon="['fas', 'share-alt']" /> {{ $t('ganttPage.share') }}
           </b-button>
           <b-input-group v-if="shareUrl && !newPlot" style="width: 285px;">
             <b-form-input ref="inputCopyShare" class="copyInput" :value="shareUrl" readonly />
@@ -73,6 +73,7 @@ import PlotFileReader from '@/services/PlotFileReader'
 import { DiskColors, PhaseColors } from '@/utils/constants/colors'
 
 export default {
+  name: 'Home',
   components: {
     CustomModal,
     ControlsGanttModal

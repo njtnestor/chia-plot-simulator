@@ -78,6 +78,19 @@ export default {
         checkboxDisabledCircleBackground: '#fff'
       }
     }],
+    ['nuxt-fontawesome', {
+      component: 'fa',
+      imports: [
+        {
+          set: '@fortawesome/free-solid-svg-icons',
+          icons: ['faShareAlt', 'faClipboard', 'faSeedling']
+        },
+        {
+          set: '@fortawesome/free-brands-svg-icons',
+          icons: ['faInstagram']
+        }
+      ]
+    }],
     '@nuxtjs/axios',
     '@nuxtjs/proxy',
     '@nuxtjs/sitemap'
@@ -97,16 +110,22 @@ export default {
   i18n: {
     locales: [
       {
+        code: 'en',
+        iso: 'en-US',
+        name: 'English',
+        file: 'en-us.js'
+      },
+      {
         code: 'es',
         iso: 'es-ES',
         name: 'Español',
         file: 'es-es.js'
       },
       {
-        code: 'en',
-        iso: 'en-US',
-        name: 'English',
-        file: 'en-us.js'
+        code: 'ru',
+        iso: 'ru-Ru',
+        name: 'Russian',
+        file: 'ru-ru.js'
       }
     ],
     detectBrowserLanguage: false,
