@@ -36,6 +36,9 @@ export default {
     // '@nuxtjs/eslint-module',
     '@nuxtjs/google-analytics'
   ],
+  serverMiddleware: {
+    '/api': '~/api'
+  },
   googleAnalytics: {
     id: process.env.GOOGLE_ANALYTICS_ID // Use as fallback if no runtime config is provided
   },
