@@ -86,7 +86,7 @@ html {
 }*/
 
 .contain{
-  //100vh - navbar - create plot bar - footer
-  min-height: calc( 100vh - 74px - 70px - 102px);
+  //100vh - navbar - create plot bar - footer - pcInfo
+  min-height: calc( 100vh - 74px - 70px - 102px - 80px);
 }
 </style>

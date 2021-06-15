@@ -30,7 +30,9 @@
     "nuxt-cookie-control": "^1.9.7",
     "nuxt-fontawesome": "^0.4.0",
     "nuxt-i18n": "^6.27.0",
-    "vue-js-modal": "^1.3.34"
+    "vue-js-modal": "^1.3.34",
+    "vue-multiselect": "^2.1.6",
+    "vue-select": "^3.11.2"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^6.0.0",

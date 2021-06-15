@@ -24,6 +24,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '~plugins/vue-js-modal.js',
+    '~plugins/vue-multiselect.js',
     { src: '~/plugins/dhtmlx-gantt', ssr: false }
   ],
 

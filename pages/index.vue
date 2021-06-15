@@ -12,7 +12,7 @@
           <b-button v-if="!newPlot" variant="outline-primary" @click="show()">
             {{ $t('ganttPage.infoModal.title') }}
           </b-button>
-          <b-button v-if="plots.length && !shareUrl && !newPlot" variant="primary" class="float-right" @click="share">
+          <b-button v-if="plots.length && !shareUrl && !newPlot" variant="primary" class="float-right" @click="$modal.show('shareModal')">
             <b-spinner v-show="sharingUrl" class="spinnerShare" small />
             <fa class="mr-2" :icon="['fas', 'share-alt']" /> {{ $t('ganttPage.share') }}
           </b-button>
@@ -56,10 +56,20 @@
         </b-button>
       </div>
     </div>
+    
     <Gantt class="left-container" />
-    <CustomModal modal-name="shareModal">
+    <div  class="p-3">
+      <div><b>CPU:</b> {{ pcInfo.cpuBrand }} {{ pcInfo.cpuModel }}</div>
+      <div><b>RAM:</b> {{ pcInfo.ramSize }}GiB {{ pcInfo.ramFrecuency }}Mhz</div>
+    </div>
+    <CustomModal modal-name="instructionsModal">
       <template slot="ModalContent">
         <ControlsGanttModal />
+      </template>
+    </CustomModal>
+    <CustomModal modal-name="shareModal">
+      <template slot="ModalContent">
+        <ShareModal @share="share" />
       </template>
     </CustomModal>
   </div>
@@ -69,6 +79,7 @@
 import dayjs from 'dayjs'
 import CustomModal from '@/components/modal/CustomModal'
 import ControlsGanttModal from '@/components/modal/ControlsGanttModal'
+import ShareModal from '@/components/modal/ShareModal'
 import PlotFileReader from '@/services/PlotFileReader'
 import { DiskColors, PhaseColors } from '@/utils/constants/colors'
 
@@ -76,10 +87,17 @@ export default {
   name: 'Home',
   components: {
     CustomModal,
-    ControlsGanttModal
+    ControlsGanttModal,
+    ShareModal
   },
   data () {
     return {
+      pcInfo: {
+        cpuBrand: undefined,
+        cpuModel: undefined,
+        ramSize: undefined,
+        ramFrecuency: undefined
+      },
       files: [],
       newPlot: false,
       plots: [],
@@ -110,10 +128,7 @@ export default {
   },
   methods: {
     show () {
-      this.$modal.show('shareModal')
-    },
-    hide () {
-      this.$modal.hide('shareModal')
+      this.$modal.show('instructionsModal')
     },
     copyShareUrl () {
       this.$refs.inputCopyShare.select()
@@ -132,7 +147,13 @@ export default {
         fr.readAsText(file)
       })
     },
-    async share () {
+    async share (pcInfo) {
+      this.$modal.hide('shareModal')
+      this.pcInfo.cpuBrand = pcInfo.cpuBrand
+      this.pcInfo.cpuModel = pcInfo.cpuModel
+      this.pcInfo.ramSize = pcInfo.ramSize
+      this.pcInfo.ramFrecuency = pcInfo.ramFrecuency
+
       this.sharingUrl = true
       const objJsonStr = JSON.stringify(this.plots)
       const objJsonB64 = Buffer.from(objJsonStr).toString('base64')
